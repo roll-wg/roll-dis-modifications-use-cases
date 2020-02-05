@@ -1,0 +1,369 @@
+<?xml version="1.0" encoding="US-ASCII"?>
+<!DOCTYPE rfc SYSTEM "rfc2629.dtd">
+<?rfc toc="yes"?>
+<?rfc tocompact="yes"?>
+<?rfc tocdepth="3"?>
+<?rfc tocindent="yes"?>
+<?rfc symrefs="yes"?>
+<?rfc sortrefs="yes"?>
+<?rfc comments="yes"?>
+<?rfc inline="yes"?>
+<?rfc compact="no"?>
+<?rfc subcompact="no"?>
+<?rfc authorship="yes"?>
+<?rfc tocappendix="yes"?>
+
+<rfc category="std" ipr="trust200902" docName="draft-papadopoulos-roll-dis-modifications-use-cases-00">
+
+
+<front> 
+
+    <title abbrev="DIS Modifications use cases">Use cases for DIS Modifications</title>
+   
+ 
+ 
+    <author initials="G.Z." surname="Papadopoulos" fullname="Georgios Z. Papadopoulos">
+      <organization>IMT Atlantique</organization>
+      <address>         
+        <postal>            
+           <street>Office B00 - 102A</street>
+           <street>2 Rue de la Ch&acirc;taigneraie</street>
+           <city>Cesson-S&eacute;vign&eacute; - Rennes</city>
+            <code>35510</code>
+            <country>FRANCE</country>
+         </postal>
+         <phone>+33 299 12 70 04</phone>
+    <email>georgios.papadopoulos@imt-atlantique.fr</email>
+      </address>
+    </author>
+
+
+   <date/>
+
+   <workgroup>RAW</workgroup>
+
+
+<abstract>
+	<t>
+   		This document presents some of the use-cases where DIS flags and options 
+   		modifications is necessary.
+	</t>
+</abstract>
+   
+
+</front>
+
+<middle>
+
+
+
+<!--section title="TEMPORARY EDITORIAL NOTES">
+
+   <t>
+		This document is an Internet Draft, so it is work-in-progress by nature.
+   		It contains the following work-in-progress elements:
+   </t>	
+     		 
+   <t>
+   	<list style="symbols">
+		<t>"TODO" statements are elements which have not yet been written by the authors 
+		for some reason (lack of time, ongoing discussions with no clear consensus, etc).
+		The statement does indicate that the text will be written at some time.</t>
+   	</list>
+   </t>
+   		 
+</section --> 
+
+
+
+<section title="Introduction">
+
+</section>
+ 
+ 
+<section title="Terminology">
+	<t>
+    	The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD", 
+        "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this document are to be 
+        interpreted as described in <xref target="RFC2119"/>.
+    </t>
+</section>
+ 
+
+
+
+
+
+
+<!-- INTEREST OF OAM          -->
+<section title="Applications">
+	<t>
+		This section details two example mechanisms that use the DIS flags
+   		and options defined in this document.  
+   		The first mechanism describes how a leaf node may join a desired DAG in an energy 
+   		efficient manner.
+   		The second mechanism details how a node may identify defunct DAGs for which it 
+   		still maintains state.
+	</t>
+
+
+
+	<section title="A Leaf Node Joining a DAG">
+		<t>
+			A new leaf node that joins an established LLN runs an iterative
+   			algorithm in which it requests (using multicast DIS) DIOs from
+   			routers belonging to the desired DAG.
+		</t>
+		
+		<t>
+			The DIS message has the "No Inconsistency" flag set to prevent resetting of 
+			Trickle timer in responding routers, thereby keeping the aggregated number of 
+			transmissions low.  
+			It also has the "DIO Type" flag set to make responding routers send unicast 
+			DIOs back, thereby not triggering full reception in nearby nodes that have 
+			state-of-the- art radio receivers with hardware-based address filtering.
+		</t>
+		
+		<t>
+			The DIS message can include a Response Spreading option prescribing a
+   			suitable spreading interval based on the expected density of nearby
+   			routers and on the expected Layer 2 technology.
+		</t>
+		
+		<t>
+			The DIS will likely include a Metric Container listing the routing
+   			constraints that the responding routers must satisfy in order to be
+   			allowed to respond.
+		</t>
+
+		<t>
+			At each iteration, the node multicasts such a DIS and waits for forthcoming 
+			DIOs.
+   			After a time equal to the spreading interval, the node considers the current 
+   			iteration to be unsuccessful.  
+   			The node consequently relaxes the routing constraints somewhat and proceeds to
+   			the next iteration.
+		</t>
+		
+		<t>
+			The cycle repeats until the node receives one or more DIOs or until it has 
+			relaxed the constraints to the lowest acceptable values.
+		</t>
+		
+		<t>
+			This algorithm has been proven in the field to be extremely energy-efficient, 
+			especially when routers have a wide communication range.
+		</t>
+	</section>
+
+
+
+	<section title="Identifying A Defunct DAG">
+		<t>
+			A RPL node may remove a neighbor from its parent set for a DAG for a number 
+			of reasons:
+			
+			<list style="symbols">
+            	<t>
+                    The neighbor is no longer reachable, as determined using a mechanism 
+                    such as Neighbor Unreachanility Detection (NUD) [RFC4861], 
+                    Bidirectional Forwarding Detection (BFD) [RFC5881] or L2 triggers [RFC5184]; or
+                </t>
+                
+                <t>
+                    The neighbor advertises an infinite rank in the DAG; or
+                </t>
+                
+                <t>
+                    Keeping the neighbor as a parent would required the node to increase 
+                    its rank beyond L + DAGMaxRankIncrease, where L is the minimum rank 
+                    the node has had in this DAG; or
+                </t>
+                
+                <t>
+                    The neighbor advertises membership in a different DAG within the same 
+                    RPL Instance, where a different DAG is recognised by a different 
+                    DODAGID or a different DODAGVersionNumber.
+                </t>
+            </list>
+		</t>
+		
+		
+		<t>
+			Even if the conditions listed above exist, a RPL node may fail to remove a 
+			neighbor from its parent set because:
+			
+			<list style="symbols">
+            	<t>
+                    The node may fail to receive the neighbor's DIOs advertising an 
+                    increased rank or the neighbor's membership in a different DAG;
+                </t>
+                
+                <t>
+                    The node may not check, and hence may not detect, the neighbor's 
+                    unreachability for a long time.  
+                    For example, the node may not have any data to send to this neighbor 
+                    and hence may not encounter any event (such as failure to send data to 
+                    this neighbor) that would trigger a check for the neighbor's reachability.
+                </t>
+            </list>
+		</t>
+
+
+		<t>
+			In such cases, a node would continue to consider itself attached to a DAG even 
+			if all its parents in the DAG are unreachable or have moved to different DAGs. 
+			Such a DAG can be characterized as being defunct from the node's perspective.  
+			If the node maintains state about a large number of defunct DAGs, such state 
+			may prevent a considerable portion of the total memory in the node from being 
+			available for more useful purposes.
+		</t>
+		
+		
+		<t>
+			To alleviate the problem described above, a RPL node may invoke the following 
+			procedure to identify a defunct DAG and delete the state it maintains for 
+			this DAG. 
+			Note that, given the proactive nature of RPL protocol, the lack of data 
+			traffic using a DAG can not be considered a reliable indication of the DAG's 
+			defunction.  
+			Further, the Trickle timer based control of DIO transmissions means the 
+			possibility of an indefinite delay in the receipt of a new DIO from a 
+			functional DAG parent. 
+			Hence, the mechanism described here is based on the use of a DIS message to 
+			solicit DIOs about a DAG suspected of defunction.
+			Further, a multicast DIS is used so as to avoid the need to query each parent 
+			individually and also to discover other neighbor routers that may serve as 
+			the node's new parents in the DAG.
+		</t>
+		
+		
+		<t>
+			When a RPL node has not received a DIO from any of its parents in a DAG for 
+			more than a locally configured time duration:
+		</t>
+		
+		
+		<t>
+			<list style="symbols">
+				<t>
+					The node generates a multicast DIS message with:
+					<list style="symbols">
+						<t>
+							the "No Inconsistency" flag set so that the responding routers
+         					do not reset their Trickle timers.
+						</t>
+						<t>
+							the "DIO Type" flag not set so that the responding routers send 
+							multicast DIOs and other nodes in the vicinity do not need to 
+							invoke this procedure.
+						</t>
+						<t>
+							a Solicited Information option to identify the DAG in question. 
+							This option must have the I and D flags set and the 
+							RPLInstanceID/DODAGID fields must be set to values identifying 
+							the DAG. 
+							The V flag inside the Solicited Information option should not 
+							be set so as to allow the neighbors to send DIOs advertising 
+							the latest version of the DAG.
+						</t>
+						<t>
+							a Response Spreading option specifying a suitable time interval 
+							over which the DIO responses may arrive.
+						</t>												
+         			</list>
+				</t>
+			</list>
+		</t>
+		
+		
+		<t>
+			<list style="symbols">
+				<t>
+					After sending the DIS, the node waits for the duration specified inside 
+					the Response Spreading option to receive the DIOs generated by its 
+					neighbors.  
+					At the conclusion of the wait duration:
+					<list style="symbols">
+						<t>
+							If the node has received one or more DIOs advertising newer 
+							version(s) of the DAG, it joins the latest version of the DAG, 
+							selects a new parent set among the neighbors advertising the 
+							latest DAG version and marks the DAG status as functional.
+						</t>
+						<t>
+							Otherwise, if the node has not received a DIO advertising the
+         					current version of the DAG from a neighbor in the parent set,
+         					it removes that neighbor from the parent set.  
+         					As a result, if the node has no parent left in the DAG, it 
+         					marks the DAG as defunct and schedule the deletion of the 
+         					state it has maintained for the DAG after a locally configured 
+         					"hold" duration.  
+         					(This is because, as per RPL specification, when a node no 
+         					longer has any parents left in a DAG, it is still required to 
+         					remember the DAG's identity (RPLInstanceID, DODAGID, 
+         					DODAGVersionNumber), the lowest rank (L) it has had in this 
+         					DAG and the DAGMaxRankIncrease value for the DAG for a certain 
+         					time interval to ensure that the node does not join an earlier 
+         					version of the DAG and does not rejoin the current version of 
+         					the DAG at a rank higher than L + DAGMaxRankIncrease.)
+						</t>												
+         			</list>
+				</t>
+			</list>
+		</t>
+	</section>
+</section>
+
+
+
+
+      
+      
+</middle>
+
+<back>
+   
+   <!--
+    <references title="Normative References">
+    </references>
+    -->
+   
+   <references title="Informative References">
+        <?rfc include='reference.RFC.2119'?> <!-- Terminology -->   
+		<?rfc include="reference.RFC.6291"?> <!-- OAM definition -->
+		<?rfc include="reference.RFC.7276"?> <!-- An Overview of Operations, Administration, and Maintenance (OAM) Tools -->      
+   </references>
+   
+   
+   
+
+</back>
+
+</rfc>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
