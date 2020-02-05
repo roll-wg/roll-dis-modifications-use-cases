@@ -1,0 +1,570 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" 
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head profile="http://www.w3.org/2006/03/hcard http://dublincore.org/documents/2008/08/04/dc-html/">
+  <meta http-equiv="Content-Type" content="text/html; charset=us-ascii" />
+
+  <title>Use cases for DIS Modifications</title>
+
+  <style type="text/css" title="Xml2Rfc (sans serif)">
+  /*<![CDATA[*/
+	  a {
+	  text-decoration: none;
+	  }
+      /* info code from SantaKlauss at http://www.madaboutstyle.com/tooltip2.html */
+      a.info {
+          /* This is the key. */
+          position: relative;
+          z-index: 24;
+          text-decoration: none;
+      }
+      a.info:hover {
+          z-index: 25;
+          color: #FFF; background-color: #900;
+      }
+      a.info span { display: none; }
+      a.info:hover span.info {
+          /* The span will display just on :hover state. */
+          display: block;
+          position: absolute;
+          font-size: smaller;
+          top: 2em; left: -5em; width: 15em;
+          padding: 2px; border: 1px solid #333;
+          color: #900; background-color: #EEE;
+          text-align: left;
+      }
+	  a.smpl {
+	  color: black;
+	  }
+	  a:hover {
+	  text-decoration: underline;
+	  }
+	  a:active {
+	  text-decoration: underline;
+	  }
+	  address {
+	  margin-top: 1em;
+	  margin-left: 2em;
+	  font-style: normal;
+	  }
+	  body {
+	  color: black;
+	  font-family: verdana, helvetica, arial, sans-serif;
+	  font-size: 10pt;
+	  max-width: 55em;
+	  
+	  }
+	  cite {
+	  font-style: normal;
+	  }
+	  dd {
+	  margin-right: 2em;
+	  }
+	  dl {
+	  margin-left: 2em;
+	  }
+	
+	  ul.empty {
+	  list-style-type: none;
+	  }
+	  ul.empty li {
+	  margin-top: .5em;
+	  }
+	  dl p {
+	  margin-left: 0em;
+	  }
+	  dt {
+	  margin-top: .5em;
+	  }
+	  h1 {
+	  font-size: 14pt;
+	  line-height: 21pt;
+	  page-break-after: avoid;
+	  }
+	  h1.np {
+	  page-break-before: always;
+	  }
+	  h1 a {
+	  color: #333333;
+	  }
+	  h2 {
+	  font-size: 12pt;
+	  line-height: 15pt;
+	  page-break-after: avoid;
+	  }
+	  h3, h4, h5, h6 {
+	  font-size: 10pt;
+	  page-break-after: avoid;
+	  }
+	  h2 a, h3 a, h4 a, h5 a, h6 a {
+	  color: black;
+	  }
+	  img {
+	  margin-left: 3em;
+	  }
+	  li {
+	  margin-left: 2em;
+	  margin-right: 2em;
+	  }
+	  ol {
+	  margin-left: 2em;
+	  margin-right: 2em;
+	  }
+	  ol p {
+	  margin-left: 0em;
+	  }
+	  p {
+	  margin-left: 2em;
+	  margin-right: 2em;
+	  }
+	  pre {
+	  margin-left: 3em;
+	  background-color: lightyellow;
+	  padding: .25em;
+	  }
+	  pre.text2 {
+	  border-style: dotted;
+	  border-width: 1px;
+	  background-color: #f0f0f0;
+	  width: 69em;
+	  }
+	  pre.inline {
+	  background-color: white;
+	  padding: 0em;
+	  }
+	  pre.text {
+	  border-style: dotted;
+	  border-width: 1px;
+	  background-color: #f8f8f8;
+	  width: 69em;
+	  }
+	  pre.drawing {
+	  border-style: solid;
+	  border-width: 1px;
+	  background-color: #f8f8f8;
+	  padding: 2em;
+	  }
+	  table {
+	  margin-left: 2em;
+	  }
+	  table.tt {
+	  vertical-align: top;
+	  }
+	  table.full {
+	  border-style: outset;
+	  border-width: 1px;
+	  }
+	  table.headers {
+	  border-style: outset;
+	  border-width: 1px;
+	  }
+	  table.tt td {
+	  vertical-align: top;
+	  }
+	  table.full td {
+	  border-style: inset;
+	  border-width: 1px;
+	  }
+	  table.tt th {
+	  vertical-align: top;
+	  }
+	  table.full th {
+	  border-style: inset;
+	  border-width: 1px;
+	  }
+	  table.headers th {
+	  border-style: none none inset none;
+	  border-width: 1px;
+	  }
+	  table.left {
+	  margin-right: auto;
+	  }
+	  table.right {
+	  margin-left: auto;
+	  }
+	  table.center {
+	  margin-left: auto;
+	  margin-right: auto;
+	  }
+	  caption {
+	  caption-side: bottom;
+	  font-weight: bold;
+	  font-size: 9pt;
+	  margin-top: .5em;
+	  }
+	
+	  table.header {
+	  border-spacing: 1px;
+	  width: 95%;
+	  font-size: 10pt;
+	  color: white;
+	  }
+	  td.top {
+	  vertical-align: top;
+	  }
+	  td.topnowrap {
+	  vertical-align: top;
+	  white-space: nowrap; 
+	  }
+	  table.header td {
+	  background-color: gray;
+	  width: 50%;
+	  }
+	  table.header a {
+	  color: white;
+	  }
+	  td.reference {
+	  vertical-align: top;
+	  white-space: nowrap;
+	  padding-right: 1em;
+	  }
+	  thead {
+	  display:table-header-group;
+	  }
+	  ul.toc, ul.toc ul {
+	  list-style: none;
+	  margin-left: 1.5em;
+	  margin-right: 0em;
+	  padding-left: 0em;
+	  }
+	  ul.toc li {
+	  line-height: 150%;
+	  font-weight: bold;
+	  font-size: 10pt;
+	  margin-left: 0em;
+	  margin-right: 0em;
+	  }
+	  ul.toc li li {
+	  line-height: normal;
+	  font-weight: normal;
+	  font-size: 9pt;
+	  margin-left: 0em;
+	  margin-right: 0em;
+	  }
+	  li.excluded {
+	  font-size: 0pt;
+	  }
+	  ul p {
+	  margin-left: 0em;
+	  }
+	
+	  .comment {
+	  background-color: yellow;
+	  }
+	  .center {
+	  text-align: center;
+	  }
+	  .error {
+	  color: red;
+	  font-style: italic;
+	  font-weight: bold;
+	  }
+	  .figure {
+	  font-weight: bold;
+	  text-align: center;
+	  font-size: 9pt;
+	  }
+	  .filename {
+	  color: #333333;
+	  font-weight: bold;
+	  font-size: 12pt;
+	  line-height: 21pt;
+	  text-align: center;
+	  }
+	  .fn {
+	  font-weight: bold;
+	  }
+	  .hidden {
+	  display: none;
+	  }
+	  .left {
+	  text-align: left;
+	  }
+	  .right {
+	  text-align: right;
+	  }
+	  .title {
+	  color: #990000;
+	  font-size: 18pt;
+	  line-height: 18pt;
+	  font-weight: bold;
+	  text-align: center;
+	  margin-top: 36pt;
+	  }
+	  .vcardline {
+	  display: block;
+	  }
+	  .warning {
+	  font-size: 14pt;
+	  background-color: yellow;
+	  }
+	
+	
+	  @media print {
+	  .noprint {
+		display: none;
+	  }
+	
+	  a {
+		color: black;
+		text-decoration: none;
+	  }
+	
+	  table.header {
+		width: 90%;
+	  }
+	
+	  td.header {
+		width: 50%;
+		color: black;
+		background-color: white;
+		vertical-align: top;
+		font-size: 12pt;
+	  }
+	
+	  ul.toc a::after {
+		content: leader('.') target-counter(attr(href), page);
+	  }
+	
+	  ul.ind li li a {
+		content: target-counter(attr(href), page);
+	  }
+	
+	  .print2col {
+		column-count: 2;
+		-moz-column-count: 2;
+		column-fill: auto;
+	  }
+	  }
+	
+	  @page {
+	  @top-left {
+		   content: "Internet-Draft"; 
+	  } 
+	  @top-right {
+		   content: "December 2010"; 
+	  } 
+	  @top-center {
+		   content: "Abbreviated Title";
+	  } 
+	  @bottom-left {
+		   content: "Doe"; 
+	  } 
+	  @bottom-center {
+		   content: "Expires June 2011"; 
+	  } 
+	  @bottom-right {
+		   content: "[Page " counter(page) "]"; 
+	  } 
+	  }
+	
+	  @page:first { 
+		@top-left {
+		  content: normal;
+		}
+		@top-right {
+		  content: normal;
+		}
+		@top-center {
+		  content: normal;
+		}
+	  }
+  /*]]>*/
+  </style>
+
+  <link href="#rfc.toc" rel="Contents">
+<link href="#rfc.section.1" rel="Chapter" title="1 Introduction">
+<link href="#rfc.section.2" rel="Chapter" title="2 Terminology">
+<link href="#rfc.section.3" rel="Chapter" title="3 Applications">
+<link href="#rfc.section.3.1" rel="Chapter" title="3.1 A Leaf Node Joining a DAG">
+<link href="#rfc.section.3.2" rel="Chapter" title="3.2 Identifying A Defunct DAG">
+<link href="#rfc.references" rel="Chapter" title="4 Informative References">
+<link href="#rfc.authors" rel="Chapter">
+
+
+  <meta name="generator" content="xml2rfc version 2.32.0 - https://tools.ietf.org/tools/xml2rfc" />
+  <link rel="schema.dct" href="http://purl.org/dc/terms/" />
+
+  <meta name="dct.creator" content="Papadopoulos, G." />
+  <meta name="dct.identifier" content="urn:ietf:id:draft-papadopoulos-roll-dis-modifications-use-cases-00" />
+  <meta name="dct.issued" scheme="ISO8601" content="2019-10" />
+  <meta name="dct.abstract" content="This document presents some of the use-cases where DIS flags and options modifications is necessary.  " />
+  <meta name="description" content="This document presents some of the use-cases where DIS flags and options modifications is necessary.  " />
+
+</head>
+
+<body>
+
+  <table class="header">
+    <tbody>
+    
+    	<tr>
+<td class="left">RAW</td>
+<td class="right">G. Papadopoulos</td>
+</tr>
+<tr>
+<td class="left">Internet-Draft</td>
+<td class="right">IMT Atlantique</td>
+</tr>
+<tr>
+<td class="left">Intended status: Standards Track</td>
+<td class="right">December 10, 2019</td>
+</tr>
+<tr>
+<td class="left">Expires: June 12, 2020</td>
+<td class="right"></td>
+</tr>
+
+    	
+    </tbody>
+  </table>
+
+  <p class="title">Use cases for DIS Modifications<br />
+  <span class="filename">draft-papadopoulos-roll-dis-modifications-use-cases-00</span></p>
+  
+  <h1 id="rfc.abstract"><a href="#rfc.abstract">Abstract</a></h1>
+<p>This document presents some of the use-cases where DIS flags and options modifications is necessary.  </p>
+<h1 id="rfc.status"><a href="#rfc.status">Status of This Memo</a></h1>
+<p>This Internet-Draft is submitted in full conformance with the provisions of BCP 78 and BCP 79.</p>
+<p>Internet-Drafts are working documents of the Internet Engineering Task Force (IETF).  Note that other groups may also distribute working documents as Internet-Drafts.  The list of current Internet-Drafts is at https://datatracker.ietf.org/drafts/current/.</p>
+<p>Internet-Drafts are draft documents valid for a maximum of six months and may be updated, replaced, or obsoleted by other documents at any time.  It is inappropriate to use Internet-Drafts as reference material or to cite them other than as "work in progress."</p>
+<p>This Internet-Draft will expire on June 12, 2020.</p>
+<h1 id="rfc.copyrightnotice"><a href="#rfc.copyrightnotice">Copyright Notice</a></h1>
+<p>Copyright (c) 2019 IETF Trust and the persons identified as the document authors.  All rights reserved.</p>
+<p>This document is subject to BCP 78 and the IETF Trust's Legal Provisions Relating to IETF Documents (https://trustee.ietf.org/license-info) in effect on the date of publication of this document.  Please review these documents carefully, as they describe your rights and restrictions with respect to this document.  Code Components extracted from this document must include Simplified BSD License text as described in Section 4.e of the Trust Legal Provisions and are provided without warranty as described in the Simplified BSD License.</p>
+
+  
+  <hr class="noprint" />
+  <h1 class="np" id="rfc.toc"><a href="#rfc.toc">Table of Contents</a></h1>
+  <ul class="toc">
+
+  	<li>1.   <a href="#rfc.section.1">Introduction</a>
+</li>
+<li>2.   <a href="#rfc.section.2">Terminology</a>
+</li>
+<li>3.   <a href="#rfc.section.3">Applications</a>
+</li>
+<ul><li>3.1.   <a href="#rfc.section.3.1">A Leaf Node Joining a DAG</a>
+</li>
+<li>3.2.   <a href="#rfc.section.3.2">Identifying A Defunct DAG</a>
+</li>
+</ul><li>4.   <a href="#rfc.references">Informative References</a>
+</li>
+<li><a href="#rfc.authors">Author's Address</a>
+</li>
+
+
+  </ul>
+
+  <h1 id="rfc.section.1">
+<a href="#rfc.section.1">1.</a> Introduction</h1>
+<h1 id="rfc.section.2">
+<a href="#rfc.section.2">2.</a> Terminology</h1>
+<p id="rfc.section.2.p.1">The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this document are to be interpreted as described in <a href="#RFC2119" class="xref">[RFC2119]</a>.  </p>
+<h1 id="rfc.section.3">
+<a href="#rfc.section.3">3.</a> Applications</h1>
+<p id="rfc.section.3.p.1">This section details two example mechanisms that use the DIS flags and options defined in this document.  The first mechanism describes how a leaf node may join a desired DAG in an energy efficient manner.  The second mechanism details how a node may identify defunct DAGs for which it still maintains state.  </p>
+<h1 id="rfc.section.3.1">
+<a href="#rfc.section.3.1">3.1.</a> A Leaf Node Joining a DAG</h1>
+<p id="rfc.section.3.1.p.1">A new leaf node that joins an established LLN runs an iterative algorithm in which it requests (using multicast DIS) DIOs from routers belonging to the desired DAG.  </p>
+<p id="rfc.section.3.1.p.2">The DIS message has the "No Inconsistency" flag set to prevent resetting of Trickle timer in responding routers, thereby keeping the aggregated number of transmissions low.  It also has the "DIO Type" flag set to make responding routers send unicast DIOs back, thereby not triggering full reception in nearby nodes that have state-of-the- art radio receivers with hardware-based address filtering.  </p>
+<p id="rfc.section.3.1.p.3">The DIS message can include a Response Spreading option prescribing a suitable spreading interval based on the expected density of nearby routers and on the expected Layer 2 technology.  </p>
+<p id="rfc.section.3.1.p.4">The DIS will likely include a Metric Container listing the routing constraints that the responding routers must satisfy in order to be allowed to respond.  </p>
+<p id="rfc.section.3.1.p.5">At each iteration, the node multicasts such a DIS and waits for forthcoming DIOs.  After a time equal to the spreading interval, the node considers the current iteration to be unsuccessful.  The node consequently relaxes the routing constraints somewhat and proceeds to the next iteration.  </p>
+<p id="rfc.section.3.1.p.6">The cycle repeats until the node receives one or more DIOs or until it has relaxed the constraints to the lowest acceptable values.  </p>
+<p id="rfc.section.3.1.p.7">This algorithm has been proven in the field to be extremely energy-efficient, especially when routers have a wide communication range.  </p>
+<h1 id="rfc.section.3.2">
+<a href="#rfc.section.3.2">3.2.</a> Identifying A Defunct DAG</h1>
+<p id="rfc.section.3.2.p.1">A RPL node may remove a neighbor from its parent set for a DAG for a number of reasons: </p>
+
+<ul>
+<li>The neighbor is no longer reachable, as determined using a mechanism such as Neighbor Unreachanility Detection (NUD) [RFC4861], Bidirectional Forwarding Detection (BFD) [RFC5881] or L2 triggers [RFC5184]; or </li>
+<li>The neighbor advertises an infinite rank in the DAG; or </li>
+<li>Keeping the neighbor as a parent would required the node to increase its rank beyond L + DAGMaxRankIncrease, where L is the minimum rank the node has had in this DAG; or </li>
+<li>The neighbor advertises membership in a different DAG within the same RPL Instance, where a different DAG is recognised by a different DODAGID or a different DODAGVersionNumber.  </li>
+</ul>
+
+<p> </p>
+<p id="rfc.section.3.2.p.2">Even if the conditions listed above exist, a RPL node may fail to remove a neighbor from its parent set because: </p>
+
+<ul>
+<li>The node may fail to receive the neighbor's DIOs advertising an increased rank or the neighbor's membership in a different DAG; </li>
+<li>The node may not check, and hence may not detect, the neighbor's unreachability for a long time.  For example, the node may not have any data to send to this neighbor and hence may not encounter any event (such as failure to send data to this neighbor) that would trigger a check for the neighbor's reachability.  </li>
+</ul>
+
+<p> </p>
+<p id="rfc.section.3.2.p.3">In such cases, a node would continue to consider itself attached to a DAG even if all its parents in the DAG are unreachable or have moved to different DAGs.  Such a DAG can be characterized as being defunct from the node's perspective.  If the node maintains state about a large number of defunct DAGs, such state may prevent a considerable portion of the total memory in the node from being available for more useful purposes.  </p>
+<p id="rfc.section.3.2.p.4">To alleviate the problem described above, a RPL node may invoke the following procedure to identify a defunct DAG and delete the state it maintains for this DAG.  Note that, given the proactive nature of RPL protocol, the lack of data traffic using a DAG can not be considered a reliable indication of the DAG's defunction.  Further, the Trickle timer based control of DIO transmissions means the possibility of an indefinite delay in the receipt of a new DIO from a functional DAG parent.  Hence, the mechanism described here is based on the use of a DIS message to solicit DIOs about a DAG suspected of defunction.  Further, a multicast DIS is used so as to avoid the need to query each parent individually and also to discover other neighbor routers that may serve as the node's new parents in the DAG.  </p>
+<p id="rfc.section.3.2.p.5">When a RPL node has not received a DIO from any of its parents in a DAG for more than a locally configured time duration: </p>
+<p></p>
+
+<ul><li>The node generates a multicast DIS message with: <ul>
+<li>the "No Inconsistency" flag set so that the responding routers do not reset their Trickle timers.  </li>
+<li>the "DIO Type" flag not set so that the responding routers send multicast DIOs and other nodes in the vicinity do not need to invoke this procedure.  </li>
+<li>a Solicited Information option to identify the DAG in question.  This option must have the I and D flags set and the RPLInstanceID/DODAGID fields must be set to values identifying the DAG.  The V flag inside the Solicited Information option should not be set so as to allow the neighbors to send DIOs advertising the latest version of the DAG.  </li>
+<li>a Response Spreading option specifying a suitable time interval over which the DIO responses may arrive.  </li>
+</ul>
+<p> </p>
+</li></ul>
+
+<p> </p>
+<p></p>
+
+<ul><li>After sending the DIS, the node waits for the duration specified inside the Response Spreading option to receive the DIOs generated by its neighbors.  At the conclusion of the wait duration: <ul>
+<li>If the node has received one or more DIOs advertising newer version(s) of the DAG, it joins the latest version of the DAG, selects a new parent set among the neighbors advertising the latest DAG version and marks the DAG status as functional.  </li>
+<li>Otherwise, if the node has not received a DIO advertising the current version of the DAG from a neighbor in the parent set, it removes that neighbor from the parent set.  As a result, if the node has no parent left in the DAG, it marks the DAG as defunct and schedule the deletion of the state it has maintained for the DAG after a locally configured "hold" duration.  (This is because, as per RPL specification, when a node no longer has any parents left in a DAG, it is still required to remember the DAG's identity (RPLInstanceID, DODAGID, DODAGVersionNumber), the lowest rank (L) it has had in this DAG and the DAGMaxRankIncrease value for the DAG for a certain time interval to ensure that the node does not join an earlier version of the DAG and does not rejoin the current version of the DAG at a rank higher than L + DAGMaxRankIncrease.) </li>
+</ul>
+<p> </p>
+</li></ul>
+
+<p> </p>
+<h1 id="rfc.references">
+<a href="#rfc.references">4.</a> Informative References</h1>
+<table><tbody>
+<tr>
+<td class="reference"><b id="RFC2119">[RFC2119]</b></td>
+<td class="top">
+<a>Bradner, S.</a>, "<a href="https://tools.ietf.org/html/rfc2119">Key words for use in RFCs to Indicate Requirement Levels</a>", BCP 14, RFC 2119, DOI 10.17487/RFC2119, March 1997.</td>
+</tr>
+<tr>
+<td class="reference"><b id="RFC6291">[RFC6291]</b></td>
+<td class="top">
+<a>Andersson, L.</a>, <a>van Helvoort, H.</a>, <a>Bonica, R.</a>, <a>Romascanu, D.</a> and <a>S. Mansfield</a>, "<a href="https://tools.ietf.org/html/rfc6291">Guidelines for the Use of the "OAM" Acronym in the IETF</a>", BCP 161, RFC 6291, DOI 10.17487/RFC6291, June 2011.</td>
+</tr>
+<tr>
+<td class="reference"><b id="RFC7276">[RFC7276]</b></td>
+<td class="top">
+<a>Mizrahi, T.</a>, <a>Sprecher, N.</a>, <a>Bellagamba, E.</a> and <a>Y. Weingarten</a>, "<a href="https://tools.ietf.org/html/rfc7276">An Overview of Operations, Administration, and Maintenance (OAM) Tools</a>", RFC 7276, DOI 10.17487/RFC7276, June 2014.</td>
+</tr>
+</tbody></table>
+<h1 id="rfc.authors"><a href="#rfc.authors">Author's Address</a></h1>
+<div class="avoidbreak">
+  <address class="vcard">
+	<span class="vcardline">
+	  <span class="fn">Georgios Z. Papadopoulos</span> 
+	  <span class="n hidden">
+		<span class="family-name">Papadopoulos</span>
+	  </span>
+	</span>
+	<span class="org vcardline">IMT Atlantique</span>
+	<span class="adr">
+	  <span class="vcardline">Office B00 - 102A</span>
+<span class="vcardline">2 Rue de la Ch&#226;taigneraie</span>
+
+	  <span class="vcardline">
+		<span class="locality">Cesson-S&#233;vign&#233; - Rennes</span>,  
+		<span class="region"></span>
+		<span class="code">35510</span>
+	  </span>
+	  <span class="country-name vcardline">FRANCE</span>
+	</span>
+	<span class="vcardline">Phone: +33 299 12 70 04</span>
+
+<span class="vcardline">EMail: <a href="mailto:georgios.papadopoulos@imt-atlantique.fr">georgios.papadopoulos@imt-atlantique.fr</a></span>
+
+  </address>
+</div>
+
+</body>
+</html>
