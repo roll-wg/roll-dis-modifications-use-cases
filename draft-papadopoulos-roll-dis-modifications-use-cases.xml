@@ -313,6 +313,63 @@
 			</list>
 		</t>
 	</section>
+	
+	
+	
+	<section title="Adjacencies probing with RPL">
+		<t>
+			RPL avoids periodic hello messaging as compared to other distance vector 
+			protocols.
+			It uses trickle timer based mechanism to update configuration parameters.
+			This significantly reduces the RPL control overhead.
+			One of the fallout of this design choice is that, in the absence of regular 
+			traffic, the adjacencies could not be tested and repaired if broken.
+		</t>
+		
+		<t>
+		   RPL provides a mechanism in the form of unicast DIS to query a particular node 
+		   for its DIO.
+		   A node receiving a unicast DIS MUST respond with a unicast DIO with 
+		   Configuration Option.
+		   This mechanism could as well be made use of for probing adjacencies and certain 
+		   implementations such as Contiki uses this.
+		   The periodicity of the probing is implementation dependent, but the node is 
+		   expected to invoke probing only when
+		</t>
+
+        <t>		
+			<list style="symbols">
+        		<t>
+					There is no data traffic based on which the links could be tested.
+            	</t> 
+            	
+            	<t>
+            		There is no L2 feedback.  In some case, L2 might provide periodic 
+            		beacons at link layer and the absence of beacons could be used for 
+            		link tests.
+            	</t>
+        	</list>
+        </t>
+
+		<section title="Deliberations">
+        	<t>
+				<list style="symbols">
+					<t>
+						Should the probing scheme be standardized?  
+						In some cases using multicast based probing may prove advantageous.
+					</t>
+					
+					<t>
+						In some cases using multicast based probing may prove advantageous.
+						Currently RPL does not have multicast based probing.
+						Multicast DIS/DIO may not be suitable for probing because it 
+						could possibly lead to change of states.
+					</t>
+				</list>
+			</t>
+		</section>
+	</section>
+		
 </section>
 
 

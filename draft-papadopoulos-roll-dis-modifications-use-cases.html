@@ -379,6 +379,8 @@
 <link href="#rfc.section.3" rel="Chapter" title="3 Applications">
 <link href="#rfc.section.3.1" rel="Chapter" title="3.1 A Leaf Node Joining a DAG">
 <link href="#rfc.section.3.2" rel="Chapter" title="3.2 Identifying A Defunct DAG">
+<link href="#rfc.section.3.3" rel="Chapter" title="3.3 Adjacencies probing with RPL">
+<link href="#rfc.section.3.3.1" rel="Chapter" title="3.3.1 Deliberations">
 <link href="#rfc.references" rel="Chapter" title="4 Informative References">
 <link href="#rfc.authors" rel="Chapter">
 
@@ -388,7 +390,7 @@
 
   <meta name="dct.creator" content="Papadopoulos, G." />
   <meta name="dct.identifier" content="urn:ietf:id:draft-papadopoulos-roll-dis-modifications-use-cases-00" />
-  <meta name="dct.issued" scheme="ISO8601" content="2019-10" />
+  <meta name="dct.issued" scheme="ISO8601" content="2020-03" />
   <meta name="dct.abstract" content="This document presents some of the use-cases where DIS flags and options modifications is necessary.  " />
   <meta name="description" content="This document presents some of the use-cases where DIS flags and options modifications is necessary.  " />
 
@@ -409,10 +411,10 @@
 </tr>
 <tr>
 <td class="left">Intended status: Standards Track</td>
-<td class="right">December 10, 2019</td>
+<td class="right">March 3, 2020</td>
 </tr>
 <tr>
-<td class="left">Expires: June 12, 2020</td>
+<td class="left">Expires: September 4, 2020</td>
 <td class="right"></td>
 </tr>
 
@@ -429,9 +431,9 @@
 <p>This Internet-Draft is submitted in full conformance with the provisions of BCP 78 and BCP 79.</p>
 <p>Internet-Drafts are working documents of the Internet Engineering Task Force (IETF).  Note that other groups may also distribute working documents as Internet-Drafts.  The list of current Internet-Drafts is at https://datatracker.ietf.org/drafts/current/.</p>
 <p>Internet-Drafts are draft documents valid for a maximum of six months and may be updated, replaced, or obsoleted by other documents at any time.  It is inappropriate to use Internet-Drafts as reference material or to cite them other than as "work in progress."</p>
-<p>This Internet-Draft will expire on June 12, 2020.</p>
+<p>This Internet-Draft will expire on September 4, 2020.</p>
 <h1 id="rfc.copyrightnotice"><a href="#rfc.copyrightnotice">Copyright Notice</a></h1>
-<p>Copyright (c) 2019 IETF Trust and the persons identified as the document authors.  All rights reserved.</p>
+<p>Copyright (c) 2020 IETF Trust and the persons identified as the document authors.  All rights reserved.</p>
 <p>This document is subject to BCP 78 and the IETF Trust's Legal Provisions Relating to IETF Documents (https://trustee.ietf.org/license-info) in effect on the date of publication of this document.  Please review these documents carefully, as they describe your rights and restrictions with respect to this document.  Code Components extracted from this document must include Simplified BSD License text as described in Section 4.e of the Trust Legal Provisions and are provided without warranty as described in the Simplified BSD License.</p>
 
   
@@ -449,7 +451,11 @@
 </li>
 <li>3.2.   <a href="#rfc.section.3.2">Identifying A Defunct DAG</a>
 </li>
-</ul><li>4.   <a href="#rfc.references">Informative References</a>
+<li>3.3.   <a href="#rfc.section.3.3">Adjacencies probing with RPL</a>
+</li>
+<ul><li>3.3.1.   <a href="#rfc.section.3.3.1">Deliberations</a>
+</li>
+</ul></ul><li>4.   <a href="#rfc.references">Informative References</a>
 </li>
 <li><a href="#rfc.authors">Author's Address</a>
 </li>
@@ -517,6 +523,28 @@
 </ul>
 <p> </p>
 </li></ul>
+
+<p> </p>
+<h1 id="rfc.section.3.3">
+<a href="#rfc.section.3.3">3.3.</a> Adjacencies probing with RPL</h1>
+<p id="rfc.section.3.3.p.1">RPL avoids periodic hello messaging as compared to other distance vector protocols.  It uses trickle timer based mechanism to update configuration parameters.  This significantly reduces the RPL control overhead.  One of the fallout of this design choice is that, in the absence of regular traffic, the adjacencies could not be tested and repaired if broken.  </p>
+<p id="rfc.section.3.3.p.2">RPL provides a mechanism in the form of unicast DIS to query a particular node for its DIO.  A node receiving a unicast DIS MUST respond with a unicast DIO with Configuration Option.  This mechanism could as well be made use of for probing adjacencies and certain implementations such as Contiki uses this.  The periodicity of the probing is implementation dependent, but the node is expected to invoke probing only when </p>
+<p></p>
+
+<ul>
+<li>There is no data traffic based on which the links could be tested.  </li>
+<li>There is no L2 feedback.  In some case, L2 might provide periodic beacons at link layer and the absence of beacons could be used for link tests.  </li>
+</ul>
+
+<p> </p>
+<h1 id="rfc.section.3.3.1">
+<a href="#rfc.section.3.3.1">3.3.1.</a> Deliberations</h1>
+<p></p>
+
+<ul>
+<li>Should the probing scheme be standardized? In some cases using multicast based probing may prove advantageous.  </li>
+<li>In some cases using multicast based probing may prove advantageous.  Currently RPL does not have multicast based probing.  Multicast DIS/DIO may not be suitable for probing because it could possibly lead to change of states.  </li>
+</ul>
 
 <p> </p>
 <h1 id="rfc.references">

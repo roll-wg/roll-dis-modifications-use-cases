@@ -4,8 +4,8 @@
 
 RAW                                                      G. Papadopoulos
 Internet-Draft                                            IMT Atlantique
-Intended status: Standards Track                       December 10, 2019
-Expires: June 12, 2020
+Intended status: Standards Track                           March 3, 2020
+Expires: September 4, 2020
 
 
                     Use cases for DIS Modifications
@@ -31,11 +31,11 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on June 12, 2020.
+   This Internet-Draft will expire on September 4, 2020.
 
 Copyright Notice
 
-   Copyright (c) 2019 IETF Trust and the persons identified as the
+   Copyright (c) 2020 IETF Trust and the persons identified as the
    document authors.  All rights reserved.
 
    This document is subject to BCP 78 and the IETF Trust's Legal
@@ -53,9 +53,9 @@ Copyright Notice
 
 
 
-Papadopoulos              Expires June 12, 2020                 [Page 1]
+Papadopoulos            Expires September 4, 2020               [Page 1]
 
-Internet-Draft         DIS Modifications use cases         December 2019
+Internet-Draft         DIS Modifications use cases            March 2020
 
 
 Table of Contents
@@ -65,8 +65,10 @@ Table of Contents
    3.  Applications  . . . . . . . . . . . . . . . . . . . . . . . .   2
      3.1.  A Leaf Node Joining a DAG . . . . . . . . . . . . . . . .   2
      3.2.  Identifying A Defunct DAG . . . . . . . . . . . . . . . .   3
-   4.  Informative References  . . . . . . . . . . . . . . . . . . .   5
-   Author's Address  . . . . . . . . . . . . . . . . . . . . . . . .   5
+     3.3.  Adjacencies probing with RPL  . . . . . . . . . . . . . .   5
+       3.3.1.  Deliberations . . . . . . . . . . . . . . . . . . . .   5
+   4.  Informative References  . . . . . . . . . . . . . . . . . . .   6
+   Author's Address  . . . . . . . . . . . . . . . . . . . . . . . .   6
 
 1.  Introduction
 
@@ -107,11 +109,9 @@ Table of Contents
 
 
 
-
-
-Papadopoulos              Expires June 12, 2020                 [Page 2]
+Papadopoulos            Expires September 4, 2020               [Page 2]
 
-Internet-Draft         DIS Modifications use cases         December 2019
+Internet-Draft         DIS Modifications use cases            March 2020
 
 
    At each iteration, the node multicasts such a DIS and waits for
@@ -165,9 +165,9 @@ Internet-Draft         DIS Modifications use cases         December 2019
 
 
 
-Papadopoulos              Expires June 12, 2020                 [Page 3]
+Papadopoulos            Expires September 4, 2020               [Page 3]
 
-Internet-Draft         DIS Modifications use cases         December 2019
+Internet-Draft         DIS Modifications use cases            March 2020
 
 
    large number of defunct DAGs, such state may prevent a considerable
@@ -221,9 +221,9 @@ Internet-Draft         DIS Modifications use cases         December 2019
 
 
 
-Papadopoulos              Expires June 12, 2020                 [Page 4]
+Papadopoulos            Expires September 4, 2020               [Page 4]
 
-Internet-Draft         DIS Modifications use cases         December 2019
+Internet-Draft         DIS Modifications use cases            March 2020
 
 
       *  Otherwise, if the node has not received a DIO advertising the
@@ -241,6 +241,46 @@ Internet-Draft         DIS Modifications use cases         December 2019
          earlier version of the DAG and does not rejoin the current
          version of the DAG at a rank higher than L +
          DAGMaxRankIncrease.)
+
+3.3.  Adjacencies probing with RPL
+
+   RPL avoids periodic hello messaging as compared to other distance
+   vector protocols.  It uses trickle timer based mechanism to update
+   configuration parameters.  This significantly reduces the RPL control
+   overhead.  One of the fallout of this design choice is that, in the
+   absence of regular traffic, the adjacencies could not be tested and
+   repaired if broken.
+
+   RPL provides a mechanism in the form of unicast DIS to query a
+   particular node for its DIO.  A node receiving a unicast DIS MUST
+   respond with a unicast DIO with Configuration Option.  This mechanism
+   could as well be made use of for probing adjacencies and certain
+   implementations such as Contiki uses this.  The periodicity of the
+   probing is implementation dependent, but the node is expected to
+   invoke probing only when
+
+   o  There is no data traffic based on which the links could be tested.
+
+   o  There is no L2 feedback.  In some case, L2 might provide periodic
+      beacons at link layer and the absence of beacons could be used for
+      link tests.
+
+3.3.1.  Deliberations
+
+   o  Should the probing scheme be standardized?  In some cases using
+      multicast based probing may prove advantageous.
+
+   o  In some cases using multicast based probing may prove
+      advantageous.  Currently RPL does not have multicast based
+      probing.  Multicast DIS/DIO may not be suitable for probing
+      because it could possibly lead to change of states.
+
+
+
+Papadopoulos            Expires September 4, 2020               [Page 5]
+
+Internet-Draft         DIS Modifications use cases            March 2020
+
 
 4.  Informative References
 
@@ -277,4 +317,20 @@ Author's Address
 
 
 
-Papadopoulos              Expires June 12, 2020                 [Page 5]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Papadopoulos            Expires September 4, 2020               [Page 6]
