@@ -45,8 +45,8 @@
 
 <abstract>
 	<t>
-   		This document presents some of the use-cases where DIS flags and options 
-   		modifications is necessary.
+   		This document presents some of the use-cases which call for DIS flags and options 
+   		modifications.
 	</t>
 </abstract>
    
@@ -98,18 +98,44 @@
 <!-- INTEREST OF OAM          -->
 <section title="Applications">
 	<t>
-		This section details two example mechanisms that use the DIS flags
-   		and options defined in this document.  
-   		The first mechanism describes how a leaf node may join a desired DAG in an energy 
+		This section details some use cases that require DIS modifications compared to the behaviour currently defined in  <xref target="RFC6550"/>.
+   		The first use case is thatof a new leaf node joining an established DAG in an energy 
    		efficient manner.
-   		The second mechanism details how a node may identify defunct DAGs for which it 
+   		The second use case describes why node might want to use DIS to identify defunct DAGs for which it 
    		still maintains state.
+		The third use case describes the need for adjacency probing and how DIS can used for that.
 	</t>
 
 
 
 	<section title="A Leaf Node Joining a DAG">
+                <t>
+			This use case is typically of a smart meter being replaced in the field,
+			while a RPL network is operating and stable.
+			The new smart meter must join the network quickly, without draining the energy of the surrounding
+			nodes, be they battery-operated RPL routers or leaf nodes.
+			In this use case, the issues with the current RPL specification are
+		    <list style="symbols">
+            	    <t>
+                    Just waiting for a gratuitous DIO may take a long time if the Trickle timers have relaxed to the steady state.
+	            A technician who has just installed the new meter needs to positively assess that the meter has joined the network
+	            before it leaves the premise. It is not economically viable to ask the technician to standby the meter until
+	            a gratuitous DIO has arrived, which may take hours.
+                    </t>
+                
+                    <t>
+                    If the meter sends a DIS, it needs to do so using multicast, because it has no knowledge of its surroundings.
+	            Sending a multicast DIS is considered an inconsistency by the nearby RPL routers.
+	            They will reset their Trickle timer to the shortest period.
+		    This will trigger sending a stream of DIOs until the Trickle timers relax again.
+	            The DIOs will be sent in multicast, which will trigger energy expenditure at nearby nodes,
+		    which had no need for the DIOs.
+                    </t>
+                
+                    </list>
+		</t>
 		<t>
+			A proposed solution could be the following.
 			A new leaf node that joins an established LLN runs an iterative
    			algorithm in which it requests (using multicast DIS) DIOs from
    			routers belonging to the desired DAG.
@@ -387,9 +413,9 @@
     -->
    
    <references title="Informative References">
-        <?rfc include='reference.RFC.2119'?> <!-- Terminology -->   
-		<?rfc include="reference.RFC.6291"?> <!-- OAM definition -->
-		<?rfc include="reference.RFC.7276"?> <!-- An Overview of Operations, Administration, and Maintenance (OAM) Tools -->      
+        <?rfc include='reference.RFC.2119'?> <!-- Terminology -->
+	<?rfc include='reference.RFC.6550'?> <!-- RPL base -->
+	<?rfc include='reference.RFC.6551'?> <!-- RPL metrics -->  
    </references>
    
    
