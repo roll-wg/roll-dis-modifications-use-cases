@@ -4,17 +4,17 @@
 
 RAW                                                      G. Papadopoulos
 Internet-Draft                                            IMT Atlantique
-Intended status: Standards Track                           March 3, 2020
-Expires: September 4, 2020
+Intended status: Standards Track                           March 9, 2020
+Expires: September 10, 2020
 
 
                     Use cases for DIS Modifications
-         draft-papadopoulos-roll-dis-modifications-use-cases-00
+             draft-papadopoulos-roll-dis-mods-use-cases-00
 
 Abstract
 
-   This document presents some of the use-cases where DIS flags and
-   options modifications is necessary.
+   This document presents some of the use-cases which call for DIS flags
+   and options modifications.
 
 Status of This Memo
 
@@ -31,7 +31,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on September 4, 2020.
+   This Internet-Draft will expire on September 10, 2020.
 
 Copyright Notice
 
@@ -53,7 +53,7 @@ Copyright Notice
 
 
 
-Papadopoulos            Expires September 4, 2020               [Page 1]
+Papadopoulos           Expires September 10, 2020               [Page 1]
 
 Internet-Draft         DIS Modifications use cases            March 2020
 
@@ -66,9 +66,9 @@ Table of Contents
      3.1.  A Leaf Node Joining a DAG . . . . . . . . . . . . . . . .   2
      3.2.  Identifying A Defunct DAG . . . . . . . . . . . . . . . .   3
      3.3.  Adjacencies probing with RPL  . . . . . . . . . . . . . .   5
-       3.3.1.  Deliberations . . . . . . . . . . . . . . . . . . . .   5
+       3.3.1.  Deliberations . . . . . . . . . . . . . . . . . . . .   6
    4.  Informative References  . . . . . . . . . . . . . . . . . . .   6
-   Author's Address  . . . . . . . . . . . . . . . . . . . . . . . .   6
+   Author's Address  . . . . . . . . . . . . . . . . . . . . . . . .   7
 
 1.  Introduction
 
@@ -80,17 +80,51 @@ Table of Contents
 
 3.  Applications
 
-   This section details two example mechanisms that use the DIS flags
-   and options defined in this document.  The first mechanism describes
-   how a leaf node may join a desired DAG in an energy efficient manner.
-   The second mechanism details how a node may identify defunct DAGs for
-   which it still maintains state.
+   This section details some use cases that require DIS modifications
+   compared to the behaviour currently defined in [RFC6550].  The first
+   use case is thatof a new leaf node joining an established DAG in an
+   energy efficient manner.  The second use case describes why node
+   might want to use DIS to identify defunct DAGs for which it still
+   maintains state.  The third use case describes the need for adjacency
+   probing and how DIS can used for that.
 
 3.1.  A Leaf Node Joining a DAG
 
-   A new leaf node that joins an established LLN runs an iterative
-   algorithm in which it requests (using multicast DIS) DIOs from
-   routers belonging to the desired DAG.
+   This use case is typically of a smart meter being replaced in the
+   field, while a RPL network is operating and stable.  The new smart
+   meter must join the network quickly, without draining the energy of
+   the surrounding nodes, be they battery-operated RPL routers or leaf
+   nodes.  In this use case, the issues with the current RPL
+   specification are
+
+   o  Just waiting for a gratuitous DIO may take a long time if the
+      Trickle timers have relaxed to the steady state.  A technician who
+      has just installed the new meter needs to positively assess that
+      the meter has joined the network before it leaves the premise.  It
+      is not economically viable to ask the technician to standby the
+      meter until a gratuitous DIO has arrived, which may take hours.
+
+   o  If the meter sends a DIS, it needs to do so using multicast,
+      because it has no knowledge of its surroundings.  Sending a
+
+
+
+Papadopoulos           Expires September 10, 2020               [Page 2]
+
+Internet-Draft         DIS Modifications use cases            March 2020
+
+
+      multicast DIS is considered an inconsistency by the nearby RPL
+      routers.  They will reset their Trickle timer to the shortest
+      period.  This will trigger sending a stream of DIOs until the
+      Trickle timers relax again.  The DIOs will be sent in multicast,
+      which will trigger energy expenditure at nearby nodes, which had
+      no need for the DIOs.
+
+   A proposed solution could be the following.  A new leaf node that
+   joins an established LLN runs an iterative algorithm in which it
+   requests (using multicast DIS) DIOs from routers belonging to the
+   desired DAG.
 
    The DIS message has the "No Inconsistency" flag set to prevent
    resetting of Trickle timer in responding routers, thereby keeping the
@@ -105,14 +139,7 @@ Table of Contents
 
    The DIS will likely include a Metric Container listing the routing
    constraints that the responding routers must satisfy in order to be
-   allowed to respond.
-
-
-
-Papadopoulos            Expires September 4, 2020               [Page 2]
-
-Internet-Draft         DIS Modifications use cases            March 2020
-
+   allowed to respond [RFC6551].
 
    At each iteration, the node multicasts such a DIS and waits for
    forthcoming DIOs.  After a time equal to the spreading interval, the
@@ -135,6 +162,13 @@ Internet-Draft         DIS Modifications use cases            March 2020
       mechanism such as Neighbor Unreachanility Detection (NUD)
       [RFC4861], Bidirectional Forwarding Detection (BFD) [RFC5881] or
       L2 triggers [RFC5184]; or
+
+
+
+Papadopoulos           Expires September 10, 2020               [Page 3]
+
+Internet-Draft         DIS Modifications use cases            March 2020
+
 
    o  The neighbor advertises an infinite rank in the DAG; or
 
@@ -162,14 +196,6 @@ Internet-Draft         DIS Modifications use cases            March 2020
    DAG even if all its parents in the DAG are unreachable or have moved
    to different DAGs.  Such a DAG can be characterized as being defunct
    from the node's perspective.  If the node maintains state about a
-
-
-
-Papadopoulos            Expires September 4, 2020               [Page 3]
-
-Internet-Draft         DIS Modifications use cases            March 2020
-
-
    large number of defunct DAGs, such state may prevent a considerable
    portion of the total memory in the node from being available for more
    useful purposes.
@@ -191,6 +217,14 @@ Internet-Draft         DIS Modifications use cases            March 2020
    DAG for more than a locally configured time duration:
 
    o  The node generates a multicast DIS message with:
+
+
+
+
+Papadopoulos           Expires September 10, 2020               [Page 4]
+
+Internet-Draft         DIS Modifications use cases            March 2020
+
 
       *  the "No Inconsistency" flag set so that the responding routers
          do not reset their Trickle timers.
@@ -218,14 +252,6 @@ Internet-Draft         DIS Modifications use cases            March 2020
          selects a new parent set among the neighbors advertising the
          latest DAG version and marks the DAG status as functional.
 
-
-
-
-Papadopoulos            Expires September 4, 2020               [Page 4]
-
-Internet-Draft         DIS Modifications use cases            March 2020
-
-
       *  Otherwise, if the node has not received a DIO advertising the
          current version of the DAG from a neighbor in the parent set,
          it removes that neighbor from the parent set.  As a result, if
@@ -248,6 +274,14 @@ Internet-Draft         DIS Modifications use cases            March 2020
    vector protocols.  It uses trickle timer based mechanism to update
    configuration parameters.  This significantly reduces the RPL control
    overhead.  One of the fallout of this design choice is that, in the
+
+
+
+Papadopoulos           Expires September 10, 2020               [Page 5]
+
+Internet-Draft         DIS Modifications use cases            March 2020
+
+
    absence of regular traffic, the adjacencies could not be tested and
    repaired if broken.
 
@@ -275,13 +309,6 @@ Internet-Draft         DIS Modifications use cases            March 2020
       probing.  Multicast DIS/DIO may not be suitable for probing
       because it could possibly lead to change of states.
 
-
-
-Papadopoulos            Expires September 4, 2020               [Page 5]
-
-Internet-Draft         DIS Modifications use cases            March 2020
-
-
 4.  Informative References
 
    [RFC2119]  Bradner, S., "Key words for use in RFCs to Indicate
@@ -289,17 +316,45 @@ Internet-Draft         DIS Modifications use cases            March 2020
               DOI 10.17487/RFC2119, March 1997,
               <https://www.rfc-editor.org/info/rfc2119>.
 
-   [RFC6291]  Andersson, L., van Helvoort, H., Bonica, R., Romascanu,
-              D., and S. Mansfield, "Guidelines for the Use of the "OAM"
-              Acronym in the IETF", BCP 161, RFC 6291,
-              DOI 10.17487/RFC6291, June 2011,
-              <https://www.rfc-editor.org/info/rfc6291>.
+   [RFC4861]  Narten, T., Nordmark, E., Simpson, W., and H. Soliman,
+              "Neighbor Discovery for IP version 6 (IPv6)", RFC 4861,
+              DOI 10.17487/RFC4861, September 2007,
+              <https://www.rfc-editor.org/info/rfc4861>.
 
-   [RFC7276]  Mizrahi, T., Sprecher, N., Bellagamba, E., and Y.
-              Weingarten, "An Overview of Operations, Administration,
-              and Maintenance (OAM) Tools", RFC 7276,
-              DOI 10.17487/RFC7276, June 2014,
-              <https://www.rfc-editor.org/info/rfc7276>.
+   [RFC5184]  Teraoka, F., Gogo, K., Mitsuya, K., Shibui, R., and K.
+              Mitani, "Unified Layer 2 (L2) Abstractions for Layer 3
+              (L3)-Driven Fast Handover", RFC 5184,
+              DOI 10.17487/RFC5184, May 2008,
+              <https://www.rfc-editor.org/info/rfc5184>.
+
+
+
+
+
+
+
+Papadopoulos           Expires September 10, 2020               [Page 6]
+
+Internet-Draft         DIS Modifications use cases            March 2020
+
+
+   [RFC5881]  Katz, D. and D. Ward, "Bidirectional Forwarding Detection
+              (BFD) for IPv4 and IPv6 (Single Hop)", RFC 5881,
+              DOI 10.17487/RFC5881, June 2010,
+              <https://www.rfc-editor.org/info/rfc5881>.
+
+   [RFC6550]  Winter, T., Ed., Thubert, P., Ed., Brandt, A., Hui, J.,
+              Kelsey, R., Levis, P., Pister, K., Struik, R., Vasseur,
+              JP., and R. Alexander, "RPL: IPv6 Routing Protocol for
+              Low-Power and Lossy Networks", RFC 6550,
+              DOI 10.17487/RFC6550, March 2012,
+              <https://www.rfc-editor.org/info/rfc6550>.
+
+   [RFC6551]  Vasseur, JP., Ed., Kim, M., Ed., Pister, K., Dejean, N.,
+              and D. Barthel, "Routing Metrics Used for Path Calculation
+              in Low-Power and Lossy Networks", RFC 6551,
+              DOI 10.17487/RFC6551, March 2012,
+              <https://www.rfc-editor.org/info/rfc6551>.
 
 Author's Address
 
@@ -333,4 +388,5 @@ Author's Address
 
 
 
-Papadopoulos            Expires September 4, 2020               [Page 6]
+
+Papadopoulos           Expires September 10, 2020               [Page 7]

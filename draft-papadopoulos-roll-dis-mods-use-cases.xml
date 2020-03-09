@@ -13,7 +13,7 @@
 <?rfc authorship="yes"?>
 <?rfc tocappendix="yes"?>
 
-<rfc category="std" ipr="trust200902" docName="draft-papadopoulos-roll-dis-modifications-use-cases-00">
+<rfc category="std" ipr="trust200902" docName="draft-papadopoulos-roll-dis-mods-use-cases-00">
 
 
 <front> 
@@ -159,7 +159,7 @@
 		<t>
 			The DIS will likely include a Metric Container listing the routing
    			constraints that the responding routers must satisfy in order to be
-   			allowed to respond.
+   			allowed to respond <xref target="RFC6551"/>.
 		</t>
 
 		<t>
@@ -192,8 +192,8 @@
 			<list style="symbols">
             	<t>
                     The neighbor is no longer reachable, as determined using a mechanism 
-                    such as Neighbor Unreachanility Detection (NUD) [RFC4861], 
-                    Bidirectional Forwarding Detection (BFD) [RFC5881] or L2 triggers [RFC5184]; or
+                    such as Neighbor Unreachanility Detection (NUD) <xref target="RFC4861"/>, 
+                    Bidirectional Forwarding Detection (BFD) <xref target="RFC5881"/> or L2 triggers <xref target="RFC5184"/>; or
                 </t>
                 
                 <t>
@@ -413,9 +413,12 @@
     -->
    
    <references title="Informative References">
-        <?rfc include='reference.RFC.2119'?> <!-- Terminology -->
-	<?rfc include='reference.RFC.6550'?> <!-- RPL base -->
-	<?rfc include='reference.RFC.6551'?> <!-- RPL metrics -->  
+		<?rfc include='reference.RFC.2119'?> <!-- Terminology -->
+		<?rfc include='reference.RFC.6550'?> <!-- RPL base -->
+		<?rfc include='reference.RFC.4861'?> <!-- RPL 4861 -->
+		<?rfc include='reference.RFC.5881'?> <!-- RPL 5881 -->
+		<?rfc include='reference.RFC.5184'?> <!-- RPL 5184 -->		
+		<?rfc include='reference.RFC.6551'?> <!-- RPL metrics -->  
    </references>
    
    

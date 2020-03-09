@@ -389,10 +389,10 @@
   <link rel="schema.dct" href="http://purl.org/dc/terms/" />
 
   <meta name="dct.creator" content="Papadopoulos, G." />
-  <meta name="dct.identifier" content="urn:ietf:id:draft-papadopoulos-roll-dis-modifications-use-cases-00" />
-  <meta name="dct.issued" scheme="ISO8601" content="2020-03" />
-  <meta name="dct.abstract" content="This document presents some of the use-cases where DIS flags and options modifications is necessary.  " />
-  <meta name="description" content="This document presents some of the use-cases where DIS flags and options modifications is necessary.  " />
+  <meta name="dct.identifier" content="urn:ietf:id:draft-papadopoulos-roll-dis-mods-use-cases-00" />
+  <meta name="dct.issued" scheme="ISO8601" content="2020-09" />
+  <meta name="dct.abstract" content="This document presents some of the use-cases which call for DIS flags and options modifications.  " />
+  <meta name="description" content="This document presents some of the use-cases which call for DIS flags and options modifications.  " />
 
 </head>
 
@@ -411,10 +411,10 @@
 </tr>
 <tr>
 <td class="left">Intended status: Standards Track</td>
-<td class="right">March 3, 2020</td>
+<td class="right">March 9, 2020</td>
 </tr>
 <tr>
-<td class="left">Expires: September 4, 2020</td>
+<td class="left">Expires: September 10, 2020</td>
 <td class="right"></td>
 </tr>
 
@@ -423,15 +423,15 @@
   </table>
 
   <p class="title">Use cases for DIS Modifications<br />
-  <span class="filename">draft-papadopoulos-roll-dis-modifications-use-cases-00</span></p>
+  <span class="filename">draft-papadopoulos-roll-dis-mods-use-cases-00</span></p>
   
   <h1 id="rfc.abstract"><a href="#rfc.abstract">Abstract</a></h1>
-<p>This document presents some of the use-cases where DIS flags and options modifications is necessary.  </p>
+<p>This document presents some of the use-cases which call for DIS flags and options modifications.  </p>
 <h1 id="rfc.status"><a href="#rfc.status">Status of This Memo</a></h1>
 <p>This Internet-Draft is submitted in full conformance with the provisions of BCP 78 and BCP 79.</p>
 <p>Internet-Drafts are working documents of the Internet Engineering Task Force (IETF).  Note that other groups may also distribute working documents as Internet-Drafts.  The list of current Internet-Drafts is at https://datatracker.ietf.org/drafts/current/.</p>
 <p>Internet-Drafts are draft documents valid for a maximum of six months and may be updated, replaced, or obsoleted by other documents at any time.  It is inappropriate to use Internet-Drafts as reference material or to cite them other than as "work in progress."</p>
-<p>This Internet-Draft will expire on September 4, 2020.</p>
+<p>This Internet-Draft will expire on September 10, 2020.</p>
 <h1 id="rfc.copyrightnotice"><a href="#rfc.copyrightnotice">Copyright Notice</a></h1>
 <p>Copyright (c) 2020 IETF Trust and the persons identified as the document authors.  All rights reserved.</p>
 <p>This document is subject to BCP 78 and the IETF Trust's Legal Provisions Relating to IETF Documents (https://trustee.ietf.org/license-info) in effect on the date of publication of this document.  Please review these documents carefully, as they describe your rights and restrictions with respect to this document.  Code Components extracted from this document must include Simplified BSD License text as described in Section 4.e of the Trust Legal Provisions and are provided without warranty as described in the Simplified BSD License.</p>
@@ -470,22 +470,30 @@
 <p id="rfc.section.2.p.1">The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this document are to be interpreted as described in <a href="#RFC2119" class="xref">[RFC2119]</a>.  </p>
 <h1 id="rfc.section.3">
 <a href="#rfc.section.3">3.</a> Applications</h1>
-<p id="rfc.section.3.p.1">This section details two example mechanisms that use the DIS flags and options defined in this document.  The first mechanism describes how a leaf node may join a desired DAG in an energy efficient manner.  The second mechanism details how a node may identify defunct DAGs for which it still maintains state.  </p>
+<p id="rfc.section.3.p.1">This section details some use cases that require DIS modifications compared to the behaviour currently defined in  <a href="#RFC6550" class="xref">[RFC6550]</a>.  The first use case is thatof a new leaf node joining an established DAG in an energy efficient manner.  The second use case describes why node might want to use DIS to identify defunct DAGs for which it still maintains state.  The third use case describes the need for adjacency probing and how DIS can used for that.  </p>
 <h1 id="rfc.section.3.1">
 <a href="#rfc.section.3.1">3.1.</a> A Leaf Node Joining a DAG</h1>
-<p id="rfc.section.3.1.p.1">A new leaf node that joins an established LLN runs an iterative algorithm in which it requests (using multicast DIS) DIOs from routers belonging to the desired DAG.  </p>
-<p id="rfc.section.3.1.p.2">The DIS message has the "No Inconsistency" flag set to prevent resetting of Trickle timer in responding routers, thereby keeping the aggregated number of transmissions low.  It also has the "DIO Type" flag set to make responding routers send unicast DIOs back, thereby not triggering full reception in nearby nodes that have state-of-the- art radio receivers with hardware-based address filtering.  </p>
-<p id="rfc.section.3.1.p.3">The DIS message can include a Response Spreading option prescribing a suitable spreading interval based on the expected density of nearby routers and on the expected Layer 2 technology.  </p>
-<p id="rfc.section.3.1.p.4">The DIS will likely include a Metric Container listing the routing constraints that the responding routers must satisfy in order to be allowed to respond.  </p>
-<p id="rfc.section.3.1.p.5">At each iteration, the node multicasts such a DIS and waits for forthcoming DIOs.  After a time equal to the spreading interval, the node considers the current iteration to be unsuccessful.  The node consequently relaxes the routing constraints somewhat and proceeds to the next iteration.  </p>
-<p id="rfc.section.3.1.p.6">The cycle repeats until the node receives one or more DIOs or until it has relaxed the constraints to the lowest acceptable values.  </p>
-<p id="rfc.section.3.1.p.7">This algorithm has been proven in the field to be extremely energy-efficient, especially when routers have a wide communication range.  </p>
+<p id="rfc.section.3.1.p.1">This use case is typically of a smart meter being replaced in the field, while a RPL network is operating and stable.  The new smart meter must join the network quickly, without draining the energy of the surrounding nodes, be they battery-operated RPL routers or leaf nodes.  In this use case, the issues with the current RPL specification are </p>
+
+<ul>
+<li>Just waiting for a gratuitous DIO may take a long time if the Trickle timers have relaxed to the steady state.  A technician who has just installed the new meter needs to positively assess that the meter has joined the network before it leaves the premise. It is not economically viable to ask the technician to standby the meter until a gratuitous DIO has arrived, which may take hours.  </li>
+<li>If the meter sends a DIS, it needs to do so using multicast, because it has no knowledge of its surroundings.  Sending a multicast DIS is considered an inconsistency by the nearby RPL routers.  They will reset their Trickle timer to the shortest period.  This will trigger sending a stream of DIOs until the Trickle timers relax again.  The DIOs will be sent in multicast, which will trigger energy expenditure at nearby nodes, which had no need for the DIOs.  </li>
+</ul>
+
+<p> </p>
+<p id="rfc.section.3.1.p.2">A proposed solution could be the following.  A new leaf node that joins an established LLN runs an iterative algorithm in which it requests (using multicast DIS) DIOs from routers belonging to the desired DAG.  </p>
+<p id="rfc.section.3.1.p.3">The DIS message has the "No Inconsistency" flag set to prevent resetting of Trickle timer in responding routers, thereby keeping the aggregated number of transmissions low.  It also has the "DIO Type" flag set to make responding routers send unicast DIOs back, thereby not triggering full reception in nearby nodes that have state-of-the- art radio receivers with hardware-based address filtering.  </p>
+<p id="rfc.section.3.1.p.4">The DIS message can include a Response Spreading option prescribing a suitable spreading interval based on the expected density of nearby routers and on the expected Layer 2 technology.  </p>
+<p id="rfc.section.3.1.p.5">The DIS will likely include a Metric Container listing the routing constraints that the responding routers must satisfy in order to be allowed to respond <a href="#RFC6551" class="xref">[RFC6551]</a>.  </p>
+<p id="rfc.section.3.1.p.6">At each iteration, the node multicasts such a DIS and waits for forthcoming DIOs.  After a time equal to the spreading interval, the node considers the current iteration to be unsuccessful.  The node consequently relaxes the routing constraints somewhat and proceeds to the next iteration.  </p>
+<p id="rfc.section.3.1.p.7">The cycle repeats until the node receives one or more DIOs or until it has relaxed the constraints to the lowest acceptable values.  </p>
+<p id="rfc.section.3.1.p.8">This algorithm has been proven in the field to be extremely energy-efficient, especially when routers have a wide communication range.  </p>
 <h1 id="rfc.section.3.2">
 <a href="#rfc.section.3.2">3.2.</a> Identifying A Defunct DAG</h1>
 <p id="rfc.section.3.2.p.1">A RPL node may remove a neighbor from its parent set for a DAG for a number of reasons: </p>
 
 <ul>
-<li>The neighbor is no longer reachable, as determined using a mechanism such as Neighbor Unreachanility Detection (NUD) [RFC4861], Bidirectional Forwarding Detection (BFD) [RFC5881] or L2 triggers [RFC5184]; or </li>
+<li>The neighbor is no longer reachable, as determined using a mechanism such as Neighbor Unreachanility Detection (NUD) <a href="#RFC4861" class="xref">[RFC4861]</a>, Bidirectional Forwarding Detection (BFD) <a href="#RFC5881" class="xref">[RFC5881]</a> or L2 triggers <a href="#RFC5184" class="xref">[RFC5184]</a>; or </li>
 <li>The neighbor advertises an infinite rank in the DAG; or </li>
 <li>Keeping the neighbor as a parent would required the node to increase its rank beyond L + DAGMaxRankIncrease, where L is the minimum rank the node has had in this DAG; or </li>
 <li>The neighbor advertises membership in a different DAG within the same RPL Instance, where a different DAG is recognised by a different DODAGID or a different DODAGVersionNumber.  </li>
@@ -556,14 +564,29 @@
 <a>Bradner, S.</a>, "<a href="https://tools.ietf.org/html/rfc2119">Key words for use in RFCs to Indicate Requirement Levels</a>", BCP 14, RFC 2119, DOI 10.17487/RFC2119, March 1997.</td>
 </tr>
 <tr>
-<td class="reference"><b id="RFC6291">[RFC6291]</b></td>
+<td class="reference"><b id="RFC4861">[RFC4861]</b></td>
 <td class="top">
-<a>Andersson, L.</a>, <a>van Helvoort, H.</a>, <a>Bonica, R.</a>, <a>Romascanu, D.</a> and <a>S. Mansfield</a>, "<a href="https://tools.ietf.org/html/rfc6291">Guidelines for the Use of the "OAM" Acronym in the IETF</a>", BCP 161, RFC 6291, DOI 10.17487/RFC6291, June 2011.</td>
+<a>Narten, T.</a>, <a>Nordmark, E.</a>, <a>Simpson, W.</a> and <a>H. Soliman</a>, "<a href="https://tools.ietf.org/html/rfc4861">Neighbor Discovery for IP version 6 (IPv6)</a>", RFC 4861, DOI 10.17487/RFC4861, September 2007.</td>
 </tr>
 <tr>
-<td class="reference"><b id="RFC7276">[RFC7276]</b></td>
+<td class="reference"><b id="RFC5184">[RFC5184]</b></td>
 <td class="top">
-<a>Mizrahi, T.</a>, <a>Sprecher, N.</a>, <a>Bellagamba, E.</a> and <a>Y. Weingarten</a>, "<a href="https://tools.ietf.org/html/rfc7276">An Overview of Operations, Administration, and Maintenance (OAM) Tools</a>", RFC 7276, DOI 10.17487/RFC7276, June 2014.</td>
+<a>Teraoka, F.</a>, <a>Gogo, K.</a>, <a>Mitsuya, K.</a>, <a>Shibui, R.</a> and <a>K. Mitani</a>, "<a href="https://tools.ietf.org/html/rfc5184">Unified Layer 2 (L2) Abstractions for Layer 3 (L3)-Driven Fast Handover</a>", RFC 5184, DOI 10.17487/RFC5184, May 2008.</td>
+</tr>
+<tr>
+<td class="reference"><b id="RFC5881">[RFC5881]</b></td>
+<td class="top">
+<a>Katz, D.</a> and <a>D. Ward</a>, "<a href="https://tools.ietf.org/html/rfc5881">Bidirectional Forwarding Detection (BFD) for IPv4 and IPv6 (Single Hop)</a>", RFC 5881, DOI 10.17487/RFC5881, June 2010.</td>
+</tr>
+<tr>
+<td class="reference"><b id="RFC6550">[RFC6550]</b></td>
+<td class="top">
+<a>Winter, T.</a>, <a>Thubert, P.</a>, <a>Brandt, A.</a>, <a>Hui, J.</a>, <a>Kelsey, R.</a>, <a>Levis, P.</a>, <a>Pister, K.</a>, <a>Struik, R.</a>, <a>Vasseur, JP.</a> and <a>R. Alexander</a>, "<a href="https://tools.ietf.org/html/rfc6550">RPL: IPv6 Routing Protocol for Low-Power and Lossy Networks</a>", RFC 6550, DOI 10.17487/RFC6550, March 2012.</td>
+</tr>
+<tr>
+<td class="reference"><b id="RFC6551">[RFC6551]</b></td>
+<td class="top">
+<a>Vasseur, JP.</a>, <a>Kim, M.</a>, <a>Pister, K.</a>, <a>Dejean, N.</a> and <a>D. Barthel</a>, "<a href="https://tools.ietf.org/html/rfc6551">Routing Metrics Used for Path Calculation in Low-Power and Lossy Networks</a>", RFC 6551, DOI 10.17487/RFC6551, March 2012.</td>
 </tr>
 </tbody></table>
 <h1 id="rfc.authors"><a href="#rfc.authors">Author's Address</a></h1>
