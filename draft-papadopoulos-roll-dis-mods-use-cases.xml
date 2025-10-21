@@ -13,45 +13,55 @@
 <?rfc authorship="yes"?>
 <?rfc tocappendix="yes"?>
 
-<rfc category="std" ipr="trust200902" docName="draft-papadopoulos-roll-dis-mods-use-cases-00">
+<rfc category="std" ipr="trust200902" docName="draft-papadopoulos-roll-dis-mods-use-cases-02">
+
 
 
 <front> 
-
-    <title abbrev="DIS Modifications use cases">Use cases for DIS Modifications</title>
+    <title abbrev="DIS Modifications use cases">RPL DIS Modifications and Use Cases</title>
    
- 
- 
-    <author initials="G.Z." surname="Papadopoulos" fullname="Georgios Z. Papadopoulos">
-      <organization>IMT Atlantique</organization>
-      <address>         
-        <postal>            
-           <street>Office B00 - 102A</street>
-           <street>2 Rue de la Ch&acirc;taigneraie</street>
-           <city>Cesson-S&eacute;vign&eacute; - Rennes</city>
-            <code>35510</code>
-            <country>FRANCE</country>
-         </postal>
-         <phone>+33 299 12 70 04</phone>
-    <email>georgios.papadopoulos@imt-atlantique.fr</email>
-      </address>
+    <author fullname="Cenk Gundogan">
+      <organization>HAW Hamburg</organization>
+        <address>         
+          <email>cenk.guendogan@haw-hamburg.de</email>
+        </address>
     </author>
 
+    <author fullname="Emmanuel Baccelli">
+      <organization>INRIA</organization>
+        <address>         
+          <email>Emmanuel.Baccelli@inria.fr</email>
+		  <uri>https://www.emmanuelbaccelli.org/</uri>
+        </address>
+    </author>
+
+    <author fullname="Georgios Z. Papadopoulos">
+      <organization>IMT Atlantique</organization>
+        <address>         
+          <postal> 
+            <street>2 rue de la Chataigneraie</street>
+            <street>CS 17607</street>
+            <city>Cesson-Sevigne Cedex</city>
+            <code>35576</code>
+            <country>France</country>
+          </postal>
+          <email>georgios.papadopoulos@imt-atlantique.fr</email>
+        </address>
+    </author>
 
    <date/>
 
    <workgroup>ROLL</workgroup>
 
-
-<abstract>
-	<t>
-   		This document presents some of the use-cases which call for DIS flags and options 
-   		modifications.
-	</t>
-</abstract>
-   
-
+	<abstract>
+		<t>
+   			This document augments <xref target="RFC6550"/> by defining new DODAG Information Solicitation (DIS) flags and options that enable a RPL node to exert finer control over how neighboring RPL routers respond to its DIO solicitations.
+			In addition, this document describes several use cases that motivate these DIS extensions and illustrate scenarios in which enhanced control of DIO responses improves network efficiency, responsiveness, and robustness.
+		</t>
+	</abstract>
 </front>
+
+
 
 <middle>
 
@@ -76,11 +86,156 @@
 
 
 
-<section title="Introduction">
 
+
+ <section title="Introduction">
+	<t>
+		This document augments <xref target="RFC6550"/>, the RPL routing protocol specification.
+    </t>
+
+
+
+	<section title="RFC 6550 refresher">
+		<t>
+			Per <xref target="RFC6550"/>, a RPL node can send a DODAG Information Solicitation (DIS) message to solicit DODAG Information Object (DIO) messages from neighbor RPL routers.
+		</t>
+
+		<t>
+			A DIS can be multicast to all the routers in range or it can be unicast to a specific neighbor router.
+		</t>
+
+		<t>
+			A DIS may carry a Solicited Information option that specifies the predicates of the DAG(s) the soliciting node is interested in.
+			In the absence of such Solicited Information option, the soliciting node is deemed interested in receiving DIOs for all the DAGs known by the solicited router(s).
+		</t>
+
+		<t>
+			<xref target="RFC6550"/> requires a router to treat the receipt of a multicast DIS as an inconsistency and hence reset its Trickle timers for the matching DAGs.  
+			As a result of the general Trickle timer mechanism, future DIOs will be sent at a higher rate.  
+			See <xref target="RFC6206"/> for the specification of Trickle timers and the definition of "inconsistency".
+		</t>
+
+		<t>
+			<xref target="RFC6550"/> requires a router that receives a unicast DIS to respond by unicasting a DIO for each matching DAG and to not reset the associated Trickle timer.
+			Such a DIO generated in response to a unicast DIS must contain a Configuration option.
+		</t>
+
+		<t>
+			This description is summarized in <xref target="tbl-router-behavior"/>.
+		</t>
+
+		<table anchor="tbl-router-behavior" title="Router behavior on receiving a DIS, as per [RFC6550]">
+  			<thead>
+    			<tr>
+      				<th align="left"> </th>
+      				<th align="left">Unicast DIS</th>
+      				<th align="left">Multicast DIS</th>
+    			</tr>
+  			</thead>
+
+  			<tbody>
+    			<tr>
+      				<td>No option present</td>
+      				<td>
+						<t>Unicast DIO,</t>
+						<t>do not reset Trickle timer</t>
+					</td>
+      				<td>Do reset Trickle timer</td>
+    			</tr>
+    			<tr>
+      				<td>
+						<t>Solicited Information option present,</t>
+						<t>not matching</t>
+					</td>
+      				<td>Do nothing</td>
+      				<td>Do nothing</td>
+    			</tr>
+				<tr>
+      				<td>
+						<t>Solicited Information option present,</t>
+						<t>matching</t>
+					</td>
+      				<td>
+						<t>Unicast DIO,</t>
+						<t>do not reset Trickle timer</t>
+					</td>
+      				<td>Do reset Trickle timer</td>
+    			</tr>
+  			</tbody>
+		</table>
+
+		<t>
+			More precisely, <xref target="tbl-router-behavior"/> describes the behavior of routers for each DAG they belong to.
+			In the general case where multiple RPL instances co-exist in a network, routers will maintain a Trickle timer for the one DAG of each RPL instance they belong to, and nodes may send a DIS with multiple Solicited Information options pertaining to different DAGs or instances.
+			In this more general case, routers will respond for each individual DAG/instance they belong to as per <xref target="tbl-router-behavior"/>.
+		</t>
+	</section>
+
+
+
+	<section title="Undesirable effects">
+		<t>
+			As presented in <xref target="Sourailidis2020"/>, there are number of undesirable effects linked to the operation of the DIS control message.
+		</t>
+
+		<t>
+			Now, consider a RPL leaf node that desires to join a certain DAG.
+			This node can either wait for its neighbor RPL routers to voluntarily transmit DIOs or it can proactively solicit DIOs using a DIS message.
+			Voluntary DIO transmissions may happen after a very long time if the network is stable and the Trickle timer intervals have reached large values.  Thus, proactively seeking DIOs using a DIS may be the only reasonable option.  
+			Since the node does not know which neighbor routers belong to the DAG, it must solicit the DIOs using a multicast DIS (with predicates of the desired DAG specified inside a Solicited Information option).
+			On receiving this DIS, the neighbor routers that belong to the desired DAG will reset their Trickle timers and quickly transmit their DIOs.
+			The downside of resetting Trickle timers is that the routers will keep transmitting frequent DIOs for a considerable duration until the Trickle timers again reach long intervals.
+			These DIO transmissions are unnecessary, consume precious energy and may contribute to congestion in the network.
+		</t>
+
+		<t>
+			There are other scenarios where resetting of Trickle timer following the receipt of a multicast DIS is not appropriate.
+			For example, consider a RPL router that desires to free up memory by deleting state for the defunct DAGs it belongs to.
+			Identifying a defunct DAG may require the node to solicit DIOs from its DAG parents using a multicast DIS.
+		</t>
+
+		<t>
+			Certain scenarios may require a RPL router to solicit a DIO from a parent by using a unicast DIS.
+			The parent is forced to include a Configuration option within the unicast DIO, although the requesting node might still have this information locally available.  
+			Since the information within the Configuration option is described as generally static and unchanging throughout the DODAG, it inflates the unicast DIO unnecessarily by 16 bytes for each request.
+		</t>
+	</section>
+
+
+
+	<section title="Desired improvements">
+		<t>
+			To deal with the situations described above, there is a need in the industry for DIS flags and options that allow a RPL node to control how neighbor RPL routers respond to its solicitation for DIOs, for example by expressing:
+		</t>
+
+        <list style="symbols">
+            <t>
+                the routing constraints that routers should meet to be allowed to respond, thereby lowering the number of responders.
+            </t>
+            <t>
+                whether the responding routers should reset their Trickle timers or not, thereby limiting the cumulated number of transmitted DIOs.
+            </t>
+            <t>
+                whether the responding routers should respond with a unicast DIO instead of a multicast one, thereby lowering the overhearing cost in the network.
+            </t>
+			<t>
+				whether the responding routers should omit DIO options that were not requested explicitely and thus reducing the amount of traffic and giving full control over the options of the solicited DIO.
+			</t>
+			<t>
+				the time interval over which the responding routers should schedule their DIO transmissions, thereby lowering the occurence of collisions.
+			</t>
+        </list>
+
+		<t>
+		These results have been attained by the modification implemented and presented in <xref target="Sourailidis2020"/>.
+		</t>
+	</section>
 </section>
- 
- 
+
+
+
+
+
 <section title="Terminology">
 	<t>
     	The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD", 
@@ -88,17 +243,299 @@
         interpreted as described in <xref target="RFC2119"/>.
     </t>
 </section>
- 
 
 
 
 
 
+<section title="DIS Base Object flags" anchor="DISBaseObjectFlags">
+	<t>
+    	This document defines three new flags inside the DIS base object:
+    </t>
 
-<!-- INTEREST OF OAM          -->
+    <list style="symbols">
+        <t>
+			the "No Inconsistency" (N) flag: On receiving a multicast DIS with the N flag set, a RPL router MUST NOT reset the Trickle timers for the matching DAGs.  
+			In addition, it MUST take specific action, which is to respond by explicitely sending a DIO.
+			This DIO MUST include a Configuration option.
+			This behavior augments <xref target="RFC6550"/>, which had provision for such flag.
+			Since this specific, one-shot DIO is not a consequence of the general Trickle timer mechanism, it will be sent right away if no Response Spreading option is present or it will be scheduled according to the Response Spreading option if one is present in the DIS (see <xref target="ResponseSpreading"/>).
+        </t>
+        <t>
+			the "DIO Type" (T) flag: In case the N flag is set, this T flag specifies what type of DIO is sent in response.
+			It MUST be a unicast DIO if this flag is set and it MUST be a multicast DIO if this flag is reset.
+        </t>
+        <t>
+			the "DIO Option Request" (R) flag: On receiving a DIS with the R flag set, the receiver MUST include all options that were requested by the DIS containing one or multiple DIO Option Request options.
+			A responding RPL router MUST NOT include DIO options that were not explicitely requested.
+			Note that this behaviour contradicts with <xref target="RFC6550"/> for the case of including a Configuration option in all DIOs requested by a unicast DIS.
+        </t>
+    </list>
+
+	<t>
+    	When a unicast DIS is transmitted, both its N and T flags SHOULD be 0, which are the default values per <xref target="RFC6550"/>.
+		On receiving a unicast DIS, the N and T flags MUST be ignored and treated as 00.
+		When the R flag is unset, then a RPL router may include or omit DIO options like specified in <xref target="RFC6550"/>.
+		A RPL router responding to a DIS with the R flag set MUST only include all requested DIO options in the solicited DIO.
+    </t>
+
+	<t>
+		The modified DIS base object is shown in <xref target="fig_ModifiedDISBaseObject"/>.
+	</t>
+
+	<figure title="Modified DIS Base Object" anchor="fig_ModifiedDISBaseObject">
+<artwork><![CDATA[
+ 0                   1                   2                   3
+ 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+|N|T|R|  Flags  |    Reserved   | Option(s)...
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+]]></artwork>
+    </figure>
+</section>
+
+
+
+
+
+<section title="DIS Options">
+	<section title="Metric Container" anchor="MetricContainer">
+		<t>
+			In order to lower the number of routers that will respond to a DIS, this document allows routing constraints to be carried by a DIS.
+			Only the router(s) that satisfy these constraints is (are) allowed to respond to the DIS.
+    	</t>
+
+		<t>
+			These routing constraints are described using a Metric Container option contained in the DIS.
+			Metric Containers are defined in <xref target="RFC6550"/> and <xref target="RFC6551"/>.
+			Metric Containers options were previously only allowed in DIOs.
+			This document augments <xref target="RFC6550"/> by allowing the inclusion of a Metric Container option inside a DIS as well.
+		</t>
+
+		<t>
+			A RPL router that receives a DIS with a Metric Container option MUST ignore any Metric object in it, and MUST evaluate the "mandatory" Constraint objects in it by comparing the constraint value to the value of the corresponding routing metric that the router maintains for the matching DAG(s)
+			These routing metric values MUST satisfy all the mandatory constraints in order for the router to consider the solicitation successful for the matching DAG(s).
+			This augments the behavior already present in <xref target="RFC6550"/> with the Solicited Information option.
+		</t>
+
+		<t>
+			This option can be used in both unicast and multicast DIS.
+		</t>
+	</section>
+
+
+
+	<section title="Response Spreading" anchor="ResponseSpreading">
+	<figure title="The Response Spreading option" anchor="fig_ResponseSpreadingOption">
+<artwork><![CDATA[
+ 0                   1                   2      
+ 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+|  Type = 0x0B  |    Length     | Spread. Inter.|
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+]]></artwork>
+    </figure>
+
+	<t>
+		Even with the use of the Solicited Information and the <xref target="MetricContainer"/> options, a multicast DIS may still lead to a large number of RPL routers taking immediate action and responding with DIOs.
+		Concurrent transmissions by multiple routers are not desirable since they may lead to poor channel utilization or even to packet loss.
+		Unicast DIOs may be able to avail of link-level retransmissions.
+		However, multicast DIOs usually have no such protection, since they commonly make use of link layer broadcast.
+		To avoid such problems, this document specifies an optional DIO response spreading mechanism.
+	</t>
+
+	<t>
+		This document defines a new RPL control message option called Response Spreading option, shown in <xref target="fig_ResponseSpreadingOption"/>, with a recommended Type value 0x0B (to be confirmed by IANA).
+		A RPL router that explicitely responds with a specific, one-shot DIO to a DIS that includes a Response Spreading option, MUST wait for a time uniformly chosen in the interval [O..2^SpreadingInterval], expressed in ms, before attempting to transmit its DIO.
+		If the DIS does not include a Response Spreading option, the node is free to transmit the DIO as it otherwise would.
+	</t>
+
+	<t>
+		A Response Spreading option MAY be included inside a unicast DIS message, but there is no benefit in doing so.
+	</t>
+
+	<t>
+		Multiple Response Spreading options SHOULD NOT be used inside a same DIS message.
+	</t>
+
+	<t>
+		This mechanism MUST NOT affect the Trickle timer mechanism.
+	</t>
+	</section>
+
+
+
+	<section title="DIO Option Request" anchor="DIOOptionRequest">
+	<figure title="The DIO Option Request option" anchor="fig_DIOOptionRequestOption">
+<artwork><![CDATA[
+ 0                   1                   2      
+ 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+|  Type = 0x0C  |    Length     | Req. Opt. Type|
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+]]></artwork>
+    </figure>
+
+	<t>
+		If a unicast DIS is used to request a DIO, then <xref target="RFC6550"/> mandates that a Configuration option MUST be included in this DIO.
+		The Configuration option contains generally static information that stays unmodified throughout the DAG.
+		For scenarios where a RPL node is already part of a DAG and hence is holding the information that is propagated with the Configuration option, an inclusion of such leads to an unnecesary inflation of 16 bytes for each solicited DIO.
+	</t>
+
+	<t>
+		As per <xref target="RFC6550"/>, no process is defined to trigger the inclusion of other DIO options in a solicited DIO.
+	</t>
+
+	<t>
+		This document defines a new RPL control message option called DIO Option Request option, shown in Figure 3, with a recommended Type value of 0x0C (to be confirmed by IANA).  
+		This new option allows full control over the options of the solicited DIO.
+		The target of a unicast or multicast DIS with the R flag set and with one or more DIO Option Request options included, MUST include these requested options in the solicited DIO.
+		For a DIS with the R flag unset, a RPL router behaves like described in <xref target="RFC6550"/> with regard to DIO options.
+	</t>
+	</section>
+</section>
+
+
+
+
+
+<section title="Full behavior illustration">
+	<t>
+		<xref target="tbl-OverallDISBehavior2"/> and Figure 5 illustrate the normative behavior described in <xref target="DISBaseObjectFlags"/> and <xref target="MetricContainer"/>.
+	</t>
+
+<!--
+	<table anchor="tbl-OverallDISBehavior1" title="Router behavior on receiving a DIS, as per [RFC6550]">
+  		<thead>
+    		<tr>
+				<th align="left"> </th>
+      			<th align="left">Unicast DIS</th>
+    			<th align="left">Multicast DIS</th>
+			</tr>
+  		</thead>
+
+	  	<tbody>
+			<tr>
+      			<td></td>
+      			<td></td>
+	    		<td>N=0</td>
+    		</tr>
+			<tr>
+      			<td>No option present</td>
+      			<td>
+					<t>Unicast DIO,</t>
+					<t>do not reset Trickle timer</t>
+				</td>
+      			<td>Do reset Trickle timer</td>
+	    	</tr>
+    		<tr>
+      			<td>
+					<t>Solicited Information/Metric Container</t>
+					<t>option present, not matching</t>
+				</td>
+      			<td>Do nothing</td>
+      			<td>Do nothing</td>
+    		</tr>
+			<tr>
+      			<td>
+					<t>Solicited Information/Metric Container</t>
+					<t>option present, matching</t>
+				</td>
+      			<td>
+					<t>Unicast DIO,</t>
+					<t>do not reset Trickle timer</t>
+				</td>
+      			<td>Do reset Trickle timer</td>
+    		</tr>
+  		</tbody>
+	</table>
+-->
+
+	<table anchor="tbl-OverallDISBehavior2" title="Router behavior on receiving a DIS, as per [RFC6550]">
+  		<thead>
+    		<tr>
+				<th align="left"> </th>
+      			<th align="left">Unicast DIS</th>
+    			<th align="left">Multicast DIS</th>
+				<th align="left">Multicast DIS</th>
+				<th align="left">Multicast DIS</th>
+			</tr>
+  		</thead>
+
+	  	<tbody>
+			<tr>
+      			<td></td>
+      			<td></td>
+	    		<td>N=0</td>
+				<td>N=1, T=0</td>
+				<td>N=1, T=1</td>
+    		</tr>
+			<tr>
+      			<td>No option present</td>
+      			<td>
+					<t>Unicast DIO,</t>
+					<t>do not reset Trickle timer</t>
+				</td>
+      			<td>Do reset Trickle timer</td>
+				<td>
+					<t>Multicast DIO,</t>
+					<t>do not reset Trickle timer</t>				
+				</td>
+      			<td>
+					<t>Unicast DIO,</t>
+					<t>do not reset Trickle timer</t>
+				</td>
+	    	</tr>
+    		<tr>
+      			<td>
+					<t>Solicited Information/Metric Container</t>
+					<t>option present, not matching</t>
+				</td>
+      			<td>Do nothing</td>
+      			<td>Do nothing</td>
+      			<td>Do nothing</td>
+      			<td>Do nothing</td>
+    		</tr>
+			<tr>
+      			<td>
+					<t>Solicited Information/Metric Container</t>
+					<t>option present, matching</t>
+				</td>
+      			<td>
+					<t>Unicast DIO,</t>
+					<t>do not reset Trickle timer</t>
+				</td>
+      			<td>Do reset Trickle timer</td>
+				<td>
+					<t>Multicast DIO,</t>
+					<t>do not reset Trickle timer</t>				
+				</td>
+      			<td>
+					<t>Unicast DIO,</t>
+					<t>do not reset Trickle timer</t>
+				</td>
+    		</tr>
+  		</tbody>
+	</table>
+
+	<t>
+		Notice that <xref target="tbl-OverallDISBehavior2"/> is indeed identical to <xref target="tbl-router-behavior"/> when Metric Container options are not used in DIS.
+	</t>
+
+	<t>
+		For the sake of completeness, let's remind here that a specific, one-shot DIO generated in response to a DIS with the R flag unset MUST contain a Configuration option.  
+		If the R flag is set, then this DIO contains only explicitely requested DIO options.
+		This DIO's transmission is delayed according to the Delay Spreading option of the DIS, if one such option is present.
+	</t>
+</section>
+
+
+
+
+
 <section title="Applications">
 	<t>
-		This section details some use cases that require DIS modifications compared to the behaviour currently defined in  <xref target="RFC6550"/>.
+		This section details some use cases that require DIS modifications compared to the behaviour currently defined in <xref target="RFC6550"/>.
    		The first use case is thatof a new leaf node joining an established DAG in an energy 
    		efficient manner.
    		The second use case describes why node might want to use DIS to identify defunct DAGs for which it 
@@ -395,35 +832,121 @@
 			</t>
 		</section>
 	</section>
-		
 </section>
 
 
 
 
-      
-      
+
+<section title="IANA Considerations">
+	<section title="DIS Flags">
+		<t>
+			IANA is requested to allocate bits 0, 1 and 2 of the DIS Flag Field to become the "No Inconsistency", "DIO Type", and "DIO Option Request" bits, the functionality of which is described in <xref target="DISBaseObjectFlags"/> of this document.
+		</t>
+		<figure title="DIS Flag Field" anchor="fig_DISFlagField">
+<artwork><![CDATA[
++-------+--------------------+---------------+
+| Value |      Meaning       |   Reference   |
++-------+--------------------+---------------+
+|   0   |  No Inconsistency  | This document |
+|   1   |      DIO Type      | This document |
+|   2   | DIO Option Request | This document |
++-------+--------------------+---------------+
+]]></artwork>
+    	</figure>
+	</section>
+
+
+
+	<section title="RPL Control Message Options">
+		<t>
+			IANA is requested to allocate a new code point in the "RPL Control Message Options" registry for the "Response Spreading" option and the "DIO Option Request" option, the behavior of which are described in <xref target="ResponseSpreading"/> and <xref target="DIOOptionRequest"/>, respectively.
+		</t>
+
+		<figure title="RPL Control Message Options" anchor="fig_RPLControlMessageOptions">
+<artwork><![CDATA[
++-------+--------------------+---------------+
+| Value |      Meaning       |   Reference   |
++-------+--------------------+---------------+
+|  0x0B | Response Spreading | This document |
+|  0x0C | DIO Option Request | This document |
++-------+--------------------+---------------+
+]]></artwork>
+    	</figure>
+	</section>
+</section>
+
+
+
+
+
+<section title="Security Considerations">
+	<t>
+		TBA
+	</t>
+</section>
+
+
+
+
+
+<section title="Acknowledgements">
+	<t>
+		A lot of text in this document originates from now-expired [I-D.goyal-roll-dis-modifications] co-authored with M.  Goyal.
+		The requirements and solutions also draw from now-expired [I-D.dejean-roll-selective-dis] co-authored with N.  Dejean.
+		Their contribution is deeply acknowledged.
+	</t>
+
+	<t>
+		We also thank (TBA) for their useful feedback and discussion.
+	</t>
+</section>
+
+
+
+
+
 </middle>
 
-<back>
-   
-   <!--
-    <references title="Normative References">
-    </references>
-    -->
-   
-   <references title="Informative References">
+<back>  
+   <references title="Normative References">
 		<?rfc include='reference.RFC.2119'?> <!-- Terminology -->
 		<?rfc include='reference.RFC.6550'?> <!-- RPL base -->
-		<?rfc include='reference.RFC.4861'?> <!-- RPL 4861 -->
-		<?rfc include='reference.RFC.5881'?> <!-- RPL 5881 -->
-		<?rfc include='reference.RFC.5184'?> <!-- RPL 5184 -->		
 		<?rfc include='reference.RFC.6551'?> <!-- RPL metrics -->  
    </references>
-   
-   
-   
 
+    <references title="Informative References">
+		<?rfc include='reference.RFC.4861'?> <!-- RPL 4861 -->
+		<?rfc include='reference.RFC.5184'?> <!-- RPL 5184 -->				
+		<?rfc include='reference.RFC.5881'?> <!-- RPL 5881 -->
+		<?rfc include='reference.RFC.6206'?> <!-- Trickle Timer -->
+
+		<reference anchor="Sourailidis2020" target="https://doi.org/10.1109/WoWMoM49955.2020.00080">
+			<front>
+				<title>RFC 6550: On Minimizing the Control Plane Traffic of RPL-based Industrial Networks</title>
+				<author surname="Sourailidis" fullname="Dimitrios Sourailidis" />
+				<author surname="Koutsiamanis" fullname="Remous-Aris Koutsiamanis" />
+				<author surname="Papadopoulos" fullname="Georgios Z. Papadopoulos" />
+				<author surname="Barthel" fullname="Dominique Barthel" />
+				<author surname="Montavont" fullname="Nicolas Montavont" />
+				<date year="2020" />
+			</front>
+			<refcontent>
+				Proceedings of the 21st IEEE International Symposium on "A World of Wireless, Mobile and Multimedia Networks" (WoWMoM), Cork, Ireland
+			</refcontent>
+			<!-- <seriesInfo name="DOI" value="10.1109/WoWMoM49955.2020.00080"/> -->
+		</reference>
+    </references>
+
+
+
+
+
+	<section title="Implementation Status">
+	<t>
+		TBA
+	</t>
+	</section>
 </back>
 
 </rfc>
